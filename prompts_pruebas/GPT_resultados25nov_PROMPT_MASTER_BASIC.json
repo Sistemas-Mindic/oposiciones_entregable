@@ -1,0 +1,32 @@
+[
+  {
+    "AMBITO_TERRITORIAL_RESUMIDO": "Comunidad de Madrid",
+    "ORGANO_CONVOCANTE": "Servicio Madrileño de Salud (SERMAS)",
+    "TITULO": "Bolsa de empleo temporal – Técnico Medio Sanitario en Cuidados Auxiliares de Enfermería",
+    "FECHA_APERTURA": "",
+    "FECHA_CIERRE": "",
+    "REQUISITOS": "Ser nacional español o de la UE, tener 16 años sin superar la edad de jubilación, capacidad funcional para el puesto, no haber sido separado del servicio ni inhabilitado y estar en posesión del título de Técnico en Cuidados Auxiliares de Enfermería, entre otros requisitos:contentReference[oaicite:0]{index=0}.",
+    "CREDITOS": "Valoración de méritos; baremación de méritos relacionados hasta el 30 de septiembre, con fecha de corte para aportación de méritos hasta el 15 de octubre:contentReference[oaicite:1]{index=1}.",
+    "TITULO_PROPIO": "NONE",
+    "LINK_REQUISITOS": "https://sede.comunidad.madrid/oferta-empleo/tecnico-cuidados-auxiliares-enfermeria-2",
+    "LINK_APLICACION": "https://sede.comunidad.madrid/oferta-empleo/tecnico-cuidados-auxiliares-enfermeria-2/tramitar",
+    "PERFIL": "tcae",
+    "TITULACION_REQUERIDA": "Título de Técnico en Cuidados Auxiliares de Enfermería (Ciclo Formativo de Grado Medio o Formación Profesional de Primer Grado):contentReference[oaicite:2]{index=2}",
+    "TIPO_PROCESO": "BOLSA"
+  },
+  {
+    "AMBITO_TERRITORIAL_RESUMIDO": "Comunidad Valenciana",
+    "ORGANO_CONVOCANTE": "Vicepresidencia Primera y Conselleria de Servicios Sociales, Igualdad y Vivienda – Generalitat Valenciana",
+    "TITULO": "Bolsa de empleo temporal extraordinaria del cuerpo A2-04-02 (Enfermería)",
+    "FECHA_APERTURA": "2025-11-20",
+    "FECHA_CIERRE": "",
+    "REQUISITOS": "Título de diplomatura o grado en Enfermería; cumplir los requisitos de acceso a la función pública establecidos en el artículo 62 de la Ley 4/2021 de la Función Pública Valenciana:contentReference[oaicite:3]{index=3}.",
+    "CREDITOS": "Concurso de méritos; la inscripción y la aportación de documentación para la valoración de méritos se realizan durante los primeros 20 días naturales de cada mes:contentReference[oaicite:4]{index=4}.",
+    "TITULO_PROPIO": "NONE",
+    "LINK_REQUISITOS": "https://www.gva.es/es/inicio/atencion_ciudadano/buscadores/busc_empleo_publico/detalle_oposiciones",
+    "LINK_APLICACION": "https://gvborses.gva.es/gvborses/",
+    "PERFIL": "enfermeria",
+    "TITULACION_REQUERIDA": "Título de diplomatura en Enfermería o grado en Enfermería:contentReference[oaicite:5]{index=5}",
+    "TIPO_PROCESO": "BOLSA"
+  }
+]

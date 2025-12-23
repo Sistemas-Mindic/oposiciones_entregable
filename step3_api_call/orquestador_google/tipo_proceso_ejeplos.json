@@ -1,0 +1,154 @@
+{
+  "TIPO_PROCESO_EJEMPLOS": {
+    "BOLSA": [
+      {
+        "nombre": "Convocatoria 1006-L/25 – Bolsa de empleo temporal extraordinaria Enfermería A2-04-02 (Servicios Sociales GVA)",
+        "tipo_proceso": "BOLSA",
+        "descripcion_breve": "Bolsa de empleo temporal extraordinaria por razones de urgencia para el cuerpo A2-04, cuerpo técnico facultativo de acción social, administración de servicios sociales y sociosanitarios, escala A2-04-02, especialidad Enfermería. Gestión telemática y actualización periódica de méritos.",
+        "rasgos_clave": [
+          "Encabezado: «Convocatoria 1006-L/25. Bolsa de empleo temporal extraordinaria por razones de urgencia en puestos de trabajo del cuerpo A2-04 ... escala A2-04-02. Enfermería».",
+          "En la información básica figura explícitamente: «Convocatoria: Bolsa de trabajo» y «Prueba: Concurso de méritos».",
+          "Organismo convocante: Vicepresidencia Primera y Conselleria de Servicios Sociales, Igualdad y Vivienda.",
+          "Grupo A2, con titulación general de grado o diplomatura y titulación específica en Enfermería (diplomatura o grado).",
+          "La página habla de «Fase Bolsa en funcionamiento» con distintos hitos (bases, listas provisionales/definitivas, puestos de difícil cobertura, etc.).",
+          "Se indica que «El plazo de inscripción y aportación de documentación para la valoración de méritos estará abierto durante los primeros 20 días naturales de cada mes».",
+          "La presentación y actualización de méritos se hace vía plataforma específica «https://gvborses.gva.es/gvborses».",
+          "Contiene etapas típicas de bolsa: bases y apertura de plazo, lista provisional de admitidos/excluidos, lista definitiva, anuncios de puestos de difícil cobertura, adjudicaciones, recursos, etc."
+        ],
+        "fragmentos_representativos": [
+          "«Convocatoria 1006-L/25. Bolsa de empleo temporal extraordinaria por razones de urgencia...»",
+          "«Convocatoria Bolsa de trabajo»",
+          "«Prueba Concurso de méritos»",
+          "«Fase Bolsa en funcionamiento»",
+          "«El plazo de inscripción y aportación de documentación para la valoración de méritos estará abierto durante los primeros 20 días naturales de cada mes.»"
+        ]
+      },
+      {
+        "nombre": "AUTOBAREMO A1–A2 – Procedimiento de selección temporal específico de personal sanitario asistencial (Sanitat Valenciana)",
+        "tipo_proceso": "BOLSA",
+        "descripcion_breve": "Anexo de autobaremación de méritos para la selección temporal específica de personal sanitario asistencial de los subgrupos A1 y A2. Documento de apoyo a una bolsa/procedimiento de selección temporal, centrado en cuantificar servicios prestados, formación, idiomas, etc.",
+        "rasgos_clave": [
+          "Encabezado bilingüe: «AUTOBAREM DE MÈRITS PER AL PROCEDIMENT DE SELECCIÓ TEMPORAL ESPECÍFIC DE PERSONAL SANITARI ASSISTENCIAL DELS SUBGRUPS A1 I A2» / «AUTOBAREMO DE MÉRITOS PARA EL PROCEDIMIENTO DE SELECCIÓN TEMPORAL ESPECÍFICO ... DEL SUBGRUPO A1 Y A2».",
+          "Bloque A: «Servicios prestados: hasta un máximo de 60 puntos» con desglose de servicios en la categoría/especialidad convocada en instituciones sanitarias de titularidad pública del SNS, UE/EEE, fundaciones de investigación, período de residencia, contratos de formación en investigación (Juan Rodés, Río Hortega, Sara Borrell, Miguel Servet, etc.).",
+          "Bloque B: «Formación, publicaciones, investigación, docencia y experiencia específica (itinerario formativo y profesional): hasta un máximo de 50 puntos» (máster, doctorado, publicaciones, ponencias, proyectos de investigación, cursos acreditados por Comisión Nacional de Formación Continuada / EVES, experiencia específica en la plaza ofertada, valoración de exposición de itinerario/proba práctica hasta 10 puntos).",
+          "Bloque C: «Conocimiento del Valenciano» con puntuación según nivel B1, B2, C1, C2 (hasta 4 puntos).",
+          "Bloque D: «Conocimiento de idiomas comunitarios distintos a las lenguas oficiales de la Comunitat Valenciana» (hasta 2 puntos, con niveles B1, B2, C1, C2).",
+          "Documento tipo ANEXO II de convocatoria, únicamente de autobaremo: no aparecen plazas, tribunales ni desarrollo de pruebas; se utiliza para que la persona aspirante se autovalore en un procedimiento de selección temporal.",
+          "Está expresamente ligado a «procediment de selecció temporal específic de personal sanitari assistencial», por tanto asociado a BOLSA/SELECCIÓN TEMPORAL y no a oposición fija."
+        ],
+        "fragmentos_representativos": [
+          "«AUTOBAREM DE MÈRITS PER AL PROCEDIMENT DE SELECCIÓ TEMPORAL ESPECÍFIC DE PERSONAL SANITARI ASSISTENCIAL DELS SUBGRUPS A1 I A2»",
+          "«Servicios prestados: hasta un máximo de 60 puntos»",
+          "«Formación, publicaciones, investigación, docencia y experiencia específica ... hasta un máximo de 50 puntos»",
+          "«Conocimiento del Valenciano ... hasta un máximo de 4 puntos»",
+          "«Conocimiento de idiomas comunitarios distintos a las lenguas oficiales de la Comunidad Valenciana: hasta un máximo de 2 puntos»"
+        ]
+      }
+    ],
+
+    "OPOSICION": [
+      {
+        "nombre": "Convocatoria 29/24 – Oposición C1-04-01 especialistas atención sociosanitaria, educación especial y TCAE (GVA)",
+        "tipo_proceso": "OPOSICION",
+        "descripcion_breve": "Pruebas selectivas de acceso al cuerpo de especialistas de atención sociosanitaria, educación especial y cuidados auxiliares de enfermería, escala atención sociosanitaria C1-04-01, por el sistema de oposición (solo examen), correspondientes a la oferta de empleo público de 2024 de la Generalitat Valenciana.",
+        "rasgos_clave": [
+          "En la información básica se indica literalmente: «Convocatoria Oposición» y «Prueba Oposición».",
+          "Grupo C1, con titulación general exigida: «Título de bachiller o técnico/a de formación profesional o equivalentes».",
+          "Titulación específica: «Técnico de la familia de sanidad o servicios socioculturales y a la comunidad».",
+          "Número de plazas totales: 47, distribuidas en 44 turno libre, 2 diversidad funcional y 1 enfermedad mental.",
+          "Las plazas se describen como «Puestos correspondientes a la oferta de empleo público de 2024».",
+          "Se establece tasa de examen (importe máximo 15,29 €) con bonificaciones por presentación telemática y familia numerosa/monoparental, y exenciones para diversidad funcional ≥ 33 %, familia numerosa especial/monoparental especial, víctimas de violencia sobre la mujer y personas en exclusión social.",
+          "Desarrollo típico de una OPOSICIÓN: bases y apertura de plazo, nombramiento del tribunal, listas provisionales y definitivas de admitidos/excluidos, realización de ejercicio, publicación de plantilla de respuestas, plazo de alegaciones, publicación de notas y «Lista definitiva de aprobados (fase de oposición)».",
+          "Tras la fase de oposición se abre un plazo para que los aprobados presenten documentación (DNI, título, declaración jurada de no separación/incompatibilidad, declaración de capacidad, acreditación de valenciano, discapacidad, exención/bonificaciones de tasas, etc.).",
+          "Posteriormente se produce la adjudicación de destinos y el nombramiento como personal funcionario de carrera, con sus correspondientes resoluciones y plazos de recurso."
+        ],
+        "fragmentos_representativos": [
+          "«Convocatoria 29/24. Pruebas selectivas de acceso al cuerpo especialistas de atención socio sanitaria, educación especial y cuidados auxiliares de enfermería, escala atención socio sanitaria, C1-04-01»",
+          "«Convocatoria Oposición»",
+          "«Prueba Oposición»",
+          "«Número de plazas totales 47»",
+          "«Lista definitiva de aprobados (fase de oposición)»",
+          "«Plantilla de respuestas del 1.er ejercicio»"
+        ]
+      }
+    ],
+
+    "CONCURSO-OPOSICION": [
+      {
+        "nombre": "Convocatoria 30/24 – Promoción interna C1-04-01 especialistas atención sociosanitaria, educación especial y TCAE (GVA)",
+        "tipo_proceso": "CONCURSO-OPOSICION",
+        "descripcion_breve": "Pruebas selectivas de acceso por PROMOCIÓN INTERNA al cuerpo de especialistas de atención sociosanitaria, educación especial y cuidados auxiliares de enfermería, escala atención sociosanitaria C1-04-01, mediante el sistema de concurso-oposición (examen + baremo de méritos), vinculadas a la oferta de empleo público de 2024 de la Generalitat Valenciana.",
+        "rasgos_clave": [
+          "En la información básica figura: «Convocatoria Promoción interna» y «Prueba Concurso-oposición».",
+          "Grupo C1, con titulación exigida: «Título de bachiller o técnico/a de formación profesional o equivalentes».",
+          "Titulación específica: «Técnico/a de la familia de sanidad o servicios socioculturales y a la comunidad».",
+          "Número total de plazas: 9, todas ellas de promoción interna (Turno libre: 0; Diversidad funcional: 0; Promoción interna: 9; Enfermedad mental: 0).",
+          "Requisitos específicos de promoción interna: ser personal funcionario de carrera de la Administración de la Generalitat, pertenecer a ciertos cuerpos/escalas y haber prestado servicios efectivos durante al menos dos años en el cuerpo/escala de origen (promoción interna vertical u horizontal, según el caso).",
+          "Fase de OPOSICIÓN: realización de un primer ejercicio tipo test, publicación de «Plantilla y cuestionario del primer ejercicio», plazo de alegaciones, publicación de «Lista de aprobados del ejercicio y de la fase de oposición» con apertura de plazo para presentar el autobaremo de méritos.",
+          "Fase de CONCURSO: valoración de méritos a partir del autobaremo presentado; publicación de «Lista provisional. Plazo de alegaciones», valoración de alegaciones y posterior «Lista definitiva de aprobados. Plazo de presentación de documentos».",
+          "Una vez sumadas las puntuaciones de oposición y concurso se publica la «Puntuación final (fases de oposición y concurso)» y se abre plazo para presentar la documentación requerida (DNI, título, declaraciones responsables, valenciano, discapacidad, justificantes de exención/bonificación de tasas, etc.).",
+          "Etapas finales: actos de elección de destino (procedimiento telemático), lista de adjudicación provisional, adjudicación definitiva de destinos, nombramiento como personal funcionario de carrera y publicación de la fecha de cese/toma de posesión, con sus plazos de recurso.",
+          "Todo el procedimiento se estructura con fases etiquetadas como: Convocatoria, Oposición, Concurso, Adjudicación y nombramiento."
+        ],
+        "fragmentos_representativos": [
+          "«Convocatoria 30/24. Pruebas selectivas de acceso al cuerpo especialistas de atención socio sanitaria, educación especial y cuidados auxiliares de enfermería, escala atención socio sanitaria, C1-04-01»",
+          "«Convocatoria Promoción interna»",
+          "«Prueba Concurso-oposición»",
+          "«Número de plazas totales 9 – Promoción interna: 9»",
+          "«Lista de aprobados (fase de oposición). Plazo presentación documentos para valoración de méritos.»",
+          "«Puntuación final (fases de oposición y concurso).»"
+        ]
+      }
+    ],
+
+    "CONCURSO": [
+      {
+        "nombre": "Resolución 12/11/2025 – Personal estatutario temporal Red Sanitaria Militar – Hospital General de la Defensa de Zaragoza (Ministerio de Defensa)",
+        "tipo_proceso": "CONCURSO",
+        "descripcion_breve": "Convocatoria de proceso selectivo para la selección y nombramiento de personal estatutario temporal en múltiples categorías (sanitarias y de gestión/servicios) en la Red Sanitaria Militar, para el Hospital General de la Defensa de Zaragoza «Orad y Gajías». El sistema de selección es exclusivamente por concurso de méritos.",
+        "rasgos_clave": [
+          "Base 1.3 del Anexo I: «El proceso selectivo se realizará mediante el sistema de concurso, con las valoraciones y puntuaciones que se especifican en el Anexo I.»",
+          "Se convocan «un total de 108 puestos para el HGDZ “Orad y Gajías”» de distintas categorías, todas ellas detalladas en el Anexo IV (A1, A2, C1, C2, E; personal sanitario y personal de gestión y servicios).",
+          "Requisitos generales clásicos: nacionalidad (España, UE, tratados de libre circulación), capacidad funcional, edad, habilitación (no separación ni inhabilitación), no ser estatutario fijo de la misma categoría/especialidad, certificado negativo de delitos sexuales, titulación exigida por grupos (A1, A2, C1, C2, E) y, en su caso, homologación de titulaciones extranjeras.",
+          "Anexo I – Fase de concurso con puntuación máxima de 100 puntos: Experiencia profesional (hasta 50), Formación (hasta 30) y Superación de fases de oposición en la Red Sanitaria Militar (hasta 20).",
+          "En experiencia se distingue: misma categoría/especialidad en la Red Sanitaria Militar (0,60 puntos/mes, máx. 50), misma categoría/especialidad en Servicios Públicos de Salud y otras AAPP (0,45 puntos/mes, máx. 50), misma categoría/especialidad en red privada (0,15 puntos/mes, máx. 30), distinta categoría/especialidad en Red Sanitaria Militar (0,10 puntos/mes, máx. 12) y en otros Servicios Públicos de Salud/AAPP (0,05 puntos/mes, máx. 12).",
+          "Formación para A1–A2: formación académica (doctorado, otras especialidades vía residencia, máster oficial, otros títulos de licenciatura/grado) y formación continuada acreditada; para C1–C2–E: formación continuada acreditada, todos con reglas de créditos/horas y límites de puntos.",
+          "Se valora además «Superación de fases de oposición en la Red Sanitaria Militar» en los 5 años anteriores (10 puntos por proceso superado, hasta 20 puntos).",
+          "Procedimiento administrativo: solicitud electrónica con hoja de autobaremo; publicación de listas provisionales de admitidos/excluidos con puntuación de autobaremo y plazo de subsanación/reclamación; requerimiento de documentación justificativa de méritos hasta un máximo de 100 aspirantes por puesto; revisión de la puntuación por el Tribunal; publicación de listas con puntuación verificada, alegaciones, y lista definitiva ordenada para cobertura de puestos.",
+          "Fase de nombramiento: presentación de documentación de requisitos (título, declaración de no separación e inhabilitación, acatamiento de la Constitución, certificado de capacidad funcional, certificado de delitos sexuales, declaración de no ser estatutario fijo) y resolución de nombramiento de personal estatutario temporal.",
+          "No hay ningún ejercicio de oposición (examen); toda la selección se basa en el baremo de méritos validado por el tribunal."
+        ],
+        "fragmentos_representativos": [
+          "«El proceso selectivo ... constará de una única fase de Concurso.»",
+          "«PUNTUACIÓN MÁXIMA 100 PUNTOS»",
+          "«Experiencia profesional (máximo 50 puntos)»",
+          "«Formación (máximo 30 puntos)»",
+          "«Superación de fases de oposición en la Red Sanitaria Militar (20 puntos)»",
+          "«Se convocan un total de 108 puestos para el HGDZ “Orad y Gajías”...»"
+        ]
+      }
+    ],
+
+    "OTRO": [
+      {
+        "nombre": "Modelo de solicitud – Selección cobertura de puesto con características específicas (Departamento de Salud Alicante – Hospital General)",
+        "tipo_proceso": "OTRO",
+        "descripcion_breve": "Modelo de solicitud de participación para la selección y cobertura de un puesto con características específicas en el Departamento de Salud Alicante–Hospital General. Es un documento accesorio (formulario de solicitud) sin información suficiente para determinar el tipo de proceso (bolsa, oposición, concurso, concurso-oposición).",
+        "rasgos_clave": [
+          "Encabezado institucional del «Departamento de Salud Alicante-Hospital General» con dirección, teléfono, correo electrónico y web.",
+          "Título del documento: «SOLICITUD PARTICIPACIÓN SELECCIÓN COBERTURA DE PUESTO CARACTERÍSTICAS ESPECÍFICAS Nº ………………».",
+          "Apartado «DATOS PERSONA SOLICITANTE»: nombre y apellidos, NIF, categoría profesional, teléfono, correo electrónico, domicilio.",
+          "Campos específicos del puesto: «Nº de puesto al que opta.» y «Características específicas del puesto».",
+          "Solo incluye la fecha y lugar de firma («En Alicante, a … de … de 202..»), sin bases, baremo, tribunales, número de plazas ni mención al sistema de acceso.",
+          "No aparece ninguna referencia a «bolsa de trabajo», «oposición», «concurso» ni «concurso-oposición»; es un simple modelo de solicitud que acompañará a una convocatoria mayor.",
+          "Por sí solo no permite clasificar con seguridad el tipo de proceso, por lo que debe etiquetarse como OTRO dentro del esquema tipo_proceso."
+        ],
+        "fragmentos_representativos": [
+          "«SOLICITUD PARTICIPACIÓN SELECCIÓN COBERTURA DE PUESTO CARACTERÍSTICAS ESPECÍFICAS Nº ………………»",
+          "«DATOS PERSONA SOLICITANTE: Nombre y apellidos ... N.I.F. ... Categoría profesional ... Teléfono ... Correo electrónico ... Domicilio...»",
+          "«Nº de puesto al que opta.: _______________ Características específicas del puesto __________________»"
+        ]
+      }
+    ]
+  }
+}

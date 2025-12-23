@@ -1,0 +1,159 @@
+{
+  "filtros": {
+    "ambito_geografico": {
+      "tipo": "select",
+      "opciones": {
+        "NACIONAL": "2",
+        "AUTONOMICO": "3",
+        "LOCAL": "4",
+        "INTERNACIONAL": "1"
+      }
+    },
+    "comunidad_autonoma": {
+      "tipo": "select",
+      "opciones": {
+        "COMUNITAT VALENCIANA": "10",
+        "MADRID, COMUNIDAD DE": "13",
+        "ANDALUCIA": "1",
+        "BALEARS, ILLES": "4",
+        "CANARIAS": "5",
+        "ARAGON": "2",
+        "CASTILLA Y LEON": "7",
+        "GALICIA": "12",
+        "CATALUNA": "9",
+        "MURCIA, REGION DE": "14",
+        "CASTILLA-LA MANCHA": "8",
+        "NAVARRA, COMUNIDAD FORAL DE": "15",
+        "ASTURIAS, PRINCIPADO DE": "3",
+        "CANTABRIA": "6",
+        "PAIS VASCO": "16",
+        "EXTREMADURA": "11",
+        "RIOJA, LA": "17",
+        "CIUDAD DE CEUTA": "51",
+        "CIUDAD DE MELILLA": "52"
+      }
+    },
+    "provincia": {
+      "tipo": "select",
+      "opciones": {
+        "VALENCIA": "46",
+        "MADRID": "28",
+        "BALEARS (ILLES)": "7",
+        "SANTA CRUZ DE TENERIFE": "38",
+        "CASTELLON": "12",
+        "SEVILLA": "41",
+        "ALICANTE": "3",
+        "CADIZ": "11",
+        "BARCELONA": "8",
+        "GRANADA": "18",
+        "ZARAGOZA": "50",
+        "ALMERIA": "4",
+        "ASTURIAS": "33",
+        "MALAGA": "29",
+        "MURCIA": "30",
+        "CORDOBA": "14",
+        "PONTEVEDRA": "36",
+        "NAVARRA": "31",
+        "CANTABRIA": "39",
+        "LAS PALMAS": "35",
+        "A CORUNA": "15",
+        "BIZKAIA": "48",
+        "VALLADOLID": "47",
+        "JAEN": "23",
+        "HUELVA": "21",
+        "BADAJOZ": "6",
+        "TARRAGONA": "43",
+        "LEON": "24",
+        "CEUTA": "51",
+        "BURGOS": "9",
+        "LA RIOJA": "26",
+        "SALAMANCA": "37",
+        "TOLEDO": "45",
+        "HUESCA": "22",
+        "GIPUZKOA": "20",
+        "CACERES": "10",
+        "MELILLA": "52",
+        "ALBACETE": "2",
+        "SEGOVIA": "40",
+        "TERUEL": "44",
+        "CIUDAD REAL": "13",
+        "SORIA": "42",
+        "ARABA/ALAVA": "1",
+        "PALENCIA": "34",
+        "LUGO": "27",
+        "GUADALAJARA": "19",
+        "ZAMORA": "49",
+        "CUENCA": "16",
+        "AVILA": "5",
+        "GIRONA": "17",
+        "OURENSE": "32",
+        "LLEIDA": "25"
+      }
+    },
+    "administracion_convocante": {
+      "tipo": "select",
+      "opciones": {
+        "ESTADO": "1",
+        "COMUNIDAD AUTONOMA": "2",
+        "LOCAL": "3",
+        "INTERNACIONAL": "4"
+      }
+    },
+    "tipo_personal": {
+      "tipo": "select",
+      "opciones": {
+        "PERSONAL FUNCIONARIO": "1",
+        "PERSONAL LABORAL": "2",
+        "PERSONAL ESTATUTARIO, MILITAR, OTRO": "3"
+      }
+    },
+    "plazo": {
+      "tipo": "select",
+      "opciones": {
+        "ABIERTO": "1",
+        "CERRADO": "2"
+      }
+    },
+    "nivel_titulacion": {
+      "tipo": "select",
+      "opciones": {
+        "GRADO UNIVERSITARIO, LICENCIATURA, DOCTORADO O EQUIVALENTE": "1",
+        "GRADO UNIVERSITARIO, DIPLOMATURA O EQUIVALENTE": "2",
+        "BACHILLERATO, TECNICO SUPERIOR O EQUIVALENTE": "3",
+        "EDUCACION SECUNDARIA, TECNICO O EQUIVALENTE": "4",
+        "EDUCACION PRIMARIA / SIN DETERMINAR": "5"
+      }
+    },
+    "referencia": {
+      "tipo": "texto",
+      "descripcion": "Número de referencia exacto de la convocatoria."
+    },
+    "fecha_publicacion": {
+      "tipo": "fecha_intervalo",
+      "campos": [
+        "desde",
+        "hasta"
+      ]
+    },
+    "plazas_convocadas": {
+      "tipo": "numero_con_operador",
+      "operadores": [
+        "TODAS",
+        "IGUAL A",
+        "MENOR QUE",
+        "MAYOR QUE",
+        "MENOR O IGUAL QUE",
+        "MAYOR O IGUAL QUE",
+        "INTERVALO"
+      ]
+    },
+    "bolsa_empleo": {
+      "tipo": "booleano",
+      "descripcion": "Si está a true, mostrar solo bolsas de empleo."
+    },
+    "denominacion_cuerpo_proceso": {
+      "tipo": "texto",
+      "descripcion": "Texto libre con la denominación del cuerpo/proceso."
+    }
+  }
+}

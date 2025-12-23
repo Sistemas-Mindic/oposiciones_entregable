@@ -1,0 +1,2398 @@
+{
+  "name": "Carga de Chats y RAG",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d1869b25-c381-41b3-9427-b7131b297381",
+              "leftValue": "={{ $json[\"data\"].match(/User-agent:\\s*\\*\\s*[\\s\\S]*?Disallow:\\s*\\/\\s*$/m) !== null }}",
+              "rightValue": "Disallow: /",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -96,
+        -96
+      ],
+      "id": "949f027f-b3b0-468b-adfc-b767b1233a6b",
+      "name": "Check Robots"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        128,
+        -304
+      ],
+      "id": "3f334333-13a6-4908-8ed4-bfde7ad89da3",
+      "name": "XML"
+    },
+    {
+      "parameters": {
+        "url": "https://www.medicarama.com/robots.txt",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -96,
+        -304
+      ],
+      "id": "6f72b527-1961-41c6-929f-83abcce305db",
+      "name": "GET Anti Bloqueo"
+    },
+    {
+      "parameters": {
+        "url": "https://www.medicarama.com/sitemap_index.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -96,
+        112
+      ],
+      "id": "c880fd8f-1f00-4f76-9761-33af5bbc16ea",
+      "name": "Links de Medicarama"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "40233e97-e89c-4d2e-8f17-227dcc1028ee",
+              "name": "sitemapUrl",
+              "value": "={{ $json[\"sitemapindex\"][\"sitemap\"].map(s => s.loc) }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        144,
+        -96
+      ],
+      "id": "5a904f5c-6d6f-4251-af9b-8777e8b3bce9",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "sitemapUrl",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        144,
+        112
+      ],
+      "id": "db2e2f17-0d19-49bb-b2f5-f4e9823a7e22",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.sitemapUrl }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        384,
+        -304
+      ],
+      "id": "a8c702d5-0638-49f1-891b-b283b9cb3927",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        384,
+        -96
+      ],
+      "id": "df137d8e-8a6b-46f3-8ae8-edde42416d24",
+      "name": "XML1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "40233e97-e89c-4d2e-8f17-227dcc1028ee",
+              "name": "sitemapUrl",
+              "value": "={{ $json[\"urlset\"][\"url\"].map(u => u.loc) }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        384,
+        112
+      ],
+      "id": "9dab0184-843b-4f5d-b3e7-e926f3178582",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "sitemapUrl",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        624,
+        -304
+      ],
+      "id": "9227114b-10cd-479e-bce8-e7b6308d80c7",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.sitemapUrl }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        640,
+        112
+      ],
+      "id": "07209ef5-dcf3-4e24-8b50-69c2bde7535f",
+      "name": "HTTP Request1",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "content",
+              "cssSelector": ".entry-content, .post-content",
+              "skipSelectors": "img, script, noscript, style, header, footer, nav, .site-header, .breadcrumbs"
+            },
+            {
+              "key": "title",
+              "cssSelector": "head > title"
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": true
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        944,
+        -320
+      ],
+      "id": "87e6452c-4f35-4a12-92df-fcb6019de7a9",
+      "name": "HTML"
+    },
+    {
+      "parameters": {
+        "jsCode": "// --- helpers --------------------------------------------------------------\n\n// Normaliza y canoniza URL (quita params de tracking comunes)\nconst canonicalizeUrl = (u) => {\n  if (!u) return '';\n  try {\n    const url = new URL(u);\n    url.hash = '';\n    const drop = new Set([\n      'utm_source','utm_medium','utm_campaign','utm_term','utm_content',\n      'gclid','fbclid','mc_cid','mc_eid','ref','discount'\n    ]);\n    [...url.searchParams.keys()].forEach(k => { if (drop.has(k)) url.searchParams.delete(k); });\n    return url.toString();\n  } catch {\n    return u;\n  }\n};\n\n// Repara URLs con espacios introducidos por scraping (https: //dominio. com/..)\nconst fixUrlSpacing = (str) => {\n  return str\n    .replace(/https?\\s*:\\s*\\/\\/\\s*/gi, m => m.replace(/\\s+/g,''))        // https://\n    // compacta \"medicarama. com\" -> \"medicarama.com\" sólo dentro de URLs entre () o tras http\n    .replace(/(https?:\\/\\/[^\\s)]+?)\\s*\\.\\s*(com|es|org|net)(\\/|[\\s)])/gi, '$1.$2$3')\n    .replace(/\\(\\s*https?:\\s*\\/\\/\\s*/gi, '(' + 'https://');               // (https://\n};\n\n// Decodifica entidades HTML\nconst decodeEntities = (s='') => s.replace(/&(nbsp|amp|quot|#39|apos|laquo|raquo|lt|gt);/g, m =>\n  ({'&nbsp;':' ','&amp;':'&','&quot;':'\"','&#39;':\"'\",'&apos;':\"'\",'&laquo;':'«','&raquo;':'»','&lt;':'<','&gt;':'>'}[m] || m)\n);\n\n// Normaliza unicode/espacios/typography\nconst normalize = (s='') => s\n  .replace(/\\u200B|\\u200C|\\u200D|\\u2060|\\uFEFF/g, '')\n  .replace(/[“”]/g, '\"').replace(/[‘’]/g, \"'\")\n  .replace(/[–—]/g, '-')\n  .replace(/\\t/g, ' ')\n  .replace(/\\r/g, '\\n');\n\n// Inserta saltos de línea tras encabezados en MAYÚSCULAS (>=3 palabras/≥15 chars)\nconst insertHeadingBreaks = (s='') => {\n  return s\n    .replace(/(\\b[A-ZÁÉÍÓÚÜÑ0-9][A-ZÁÉÍÓÚÜÑ0-9\\s\\-:]{14,})\\s*(?=[A-ZÁÉÍÓÚÜÑa-záéíóúüñ])/g,\n      (m)=> m.trim() + '\\n')\n    // patrones comunes tipo \"TIPOS DE X\", \"¿QUÉ ES...?\"\n    .replace(/(\\b(TIPOS DE|¿QUÉ ES|¿EN QUÉ CASOS|EL PAPEL DE|METODOLOGÍA ITLS|PASO \\d+|EVALUACIÓN INICIAL)\\b[^\\n]{0,80})\\s*(?=[A-ZÁÉÍÓÚÜÑa-záéíóúüñ])/gi,\n      (m)=> m.trim() + '\\n');\n};\n\n// Limpia “ruido” típico (footers, chat, CTA, etc.)\nconst stripBoilerplate = (txt='') => {\n  const lines = txt.split('\\n').map(l => l.trim());\n  const badLine = [\n    /^(cookies?|pol(í|i)tica de cookies|aviso legal|privacidad)$/i,\n    /^(login|acceder|mi cuenta|suscr(í|i)bete|newsletter)$/i,\n    /^(carrito|tu carrito est(á|a) vac(í|i)o)$/i,\n    /^hola!? ?(te )?ayudo\\??/i,\n    /miriam.*tu asistente/i,\n    /escribe tu mensaje/i,\n    /^leer m(á|a)s|^read more/i,\n    /^©|^copyright/i\n  ];\n  const kept = [];\n  for (let l of lines) {\n    if (!l) { kept.push(''); continue; }\n    // elimina CTAs incluso en mitad de línea\n    l = l\n      .replace(/\\b(ir al curso|comprar ahora|añadir al carrito|inscr(í|i)bete)\\b.*$/i, '')\n      .replace(/💬\\s*\\d+\\b/g, '');\n    if (!l.trim()) continue;\n    if (badLine.some(re => re.test(l))) continue;\n    l = l.replace(/[•·►➤▶️✔️✅✕✖️❌💬]/g, '').replace(/^\\s*[|>]\\s*/, '').replace(/\\s{2,}/g, ' ');\n    if (l.trim()) kept.push(l.trim());\n  }\n  return kept.join('\\n');\n};\n\n// Dedup de párrafos + colapsa espacios preservando párrafos\nconst squeeze = (str) => {\n  const seen = new Set(), out = [];\n  for (const para of str.split(/\\n{2,}/)) {\n    const p = para.trim();\n    if (!p) continue;\n    const key = p.toLowerCase();\n    if (seen.has(key)) continue;\n    seen.add(key);\n    out.push(\n      p.replace(/\\s*\\n\\s*/g, ' ').replace(/\\s{2,}/g, ' ')\n       .replace(/([.,:;!?])(?=\\S)/g, '$1 ').trim()\n    );\n  }\n  return out.join('\\n\\n');\n};\n\n// Convierte [https://...] -> (https://...) y elimina \"Read more\" repetidos\nconst tidyLinks = (s='') => s\n  .replace(/\\[https?:\\/\\/([^\\]\\s]+)\\]/gi, '(https://$1)')\n  .replace(/\\b(Leer más|Read More)\\s*[»›>]*\\s*(\\(https?:\\/\\/[^\\s)]+\\))?/gi, '')\n  .replace(/(\\(https?:\\/\\/[^\\s)]+\\))\\s+\\(https?:\\/\\/[^\\s)]+\\)/g, '$1');\n\n// Pipeline de limpieza de contenido plano\nconst cleanContent = (raw='') => {\n  let txt = decodeEntities(raw);\n  txt = normalize(txt);\n  txt = fixUrlSpacing(txt);\n  // protege bullets y headings antes de filtrar\n  txt = txt\n    .replace(/(\\s*^[-*] .+)/gm, '\\n$1')\n    .replace(/(#+\\s*[^\\n]+)\\s*/g, '$1\\n')\n    .replace(/\\n{3,}/g, '\\n\\n');\n\n  txt = insertHeadingBreaks(txt);\n  txt = stripBoilerplate(txt);\n  txt = tidyLinks(txt);\n  txt = squeeze(txt);\n\n  // limpieza final de URLs con espacios residuales\n  txt = fixUrlSpacing(txt);\n\n  return txt.replace(/\\s+$/g, '').trim();\n};\n\n// --- pipeline n8n ---------------------------------------------------------\nreturn items.map(item => {\n  const j = item.json || {};\n  const urlIn = j.sitemapUrl || j.url || '';\n  const url = canonicalizeUrl(urlIn);\n  const title = (j.title || '').trim();\n  const rawText = cleanContent(j.content || '');\n\n  return { json: { url, title, rawText, hash: j.hash } };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1504,
+        -320
+      ],
+      "id": "2a808d8a-c62d-43b8-bd75-6d11b6e1b0a4",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "60c168c9-46f8-4ef2-9cd9-ebc85fc79ace",
+              "name": "sitemapUrl",
+              "value": "={{ $('If').item.json.url }}",
+              "type": "string"
+            },
+            {
+              "id": "ee761ebe-09e2-4b44-9db1-1f6a119bd61c",
+              "name": "hash",
+              "value": "={{ $('If').item.json.data }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1216,
+        320
+      ],
+      "id": "1752997c-f2a3-4d0b-a43d-c74ed0c035d5",
+      "name": "Agregar URL"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0f6ce6cf-50f8-49e2-9c93-011bcbd426c2",
+              "name": "rawText",
+              "value": "={{ $json.rawText }}",
+              "type": "string"
+            },
+            {
+              "id": "e1111bff-a464-4d3b-9696-277ae9396125",
+              "name": "url",
+              "value": "={{ $json.url }}",
+              "type": "string"
+            },
+            {
+              "id": "25250791-63b9-4b7b-a7dc-3968da29bf66",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "240abf0a-a8a1-4cef-9c9f-ff0602bbb100",
+              "name": "hash",
+              "value": "={{ $json.hash }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1504,
+        -112
+      ],
+      "id": "6035fb9c-fafb-40f4-9e19-aa3f58d233d4",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.rawText }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Actúas como un motor de pre-procesamiento de texto altamente preciso para un sistema RAG. Tu única función es transformar texto crudo extraído de HTML en un formato limpio y estructurado. Eres una herramienta, no un escritor. Tu trabajo es una copia literal y una limpieza mecánica.\n\n## Misión Principal\nExtraer el contenido doctrinal y formativo, limpiarlo de ruido (elementos de UI, duplicados) y normalizar su formato SIN RESUMIR, SIN PARAFRASEAR y SIN ALTERAR el contenido original. La fidelidad al texto original es la prioridad número uno. No debes usar tu conocimiento general sobre ningún tema; procesa ÚNICAMENTE el texto de entrada.\n\n## Proceso Algorítmico\n1.  **Identificar Contenido Útil:** Aislar párrafos con información clínica, definiciones y detalles de cursos.\n2.  **Descartar Ruido:** Eliminar navegación, metadatos, texto de UI y duplicados.\n3.  **Limpiar y Normalizar:**\n    -   Encabezados: Copia literal en su propia línea.\n    -   Listas: Usar un guion y un espacio (`- `).\n    -   URLs: Entre paréntesis `()` y limpias de tracking.\n    -   Espaciado: Eliminar espacios y saltos de línea múltiples.\n4.  **Extraer Cursos:** Identificar entidades de cursos del texto ya limpio.\n\n## Formato de Salida Obligatorio\n- Si el texto es relevante y con contenido suficiente:\nTema: <tema corto y preciso>\nTexto_limpio:\n<Contenido completo, limpio y normalizado.>\nCursos_detectados:\n<Una entrada por curso, si se detectan.>\n- Nombre: <Nombre del curso>\n- Tipo: <Tipo de curso>\n- URL: <URL del curso>\n\n- Si el texto es irrelevante (solo navegación, 404, muy corto, o sin contenido formativo claro):\nTema: Irrelevante\nTexto_limpio: Texto de navegación o sin valor formativo."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1472,
+        320
+      ],
+      "id": "c7409316-2f7d-4de8-aba0-057678f49a9f",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "gpt-oss:20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        1488,
+        336
+      ],
+      "id": "5a38bbee-d6d1-4000-a4b0-43b48efc25a1",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "589WrEVHKVq6WEVo",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0e61ed43-02c4-46c7-8057-08138258f564",
+              "name": "resumen",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            },
+            {
+              "id": "06489828-fbe3-4adb-8bb1-f86b85cfd575",
+              "name": "url",
+              "value": "={{ $('Edit Fields2').item.json.url }}",
+              "type": "string"
+            },
+            {
+              "id": "cc430a9c-08bb-47e7-9203-68388770d27c",
+              "name": "titulo",
+              "value": "={{ $('Edit Fields2').item.json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "e26bcbd1-23c5-48e3-8218-cae862abae4c",
+              "name": "hash",
+              "value": "={{ $('Edit Fields2').item.json.hash }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1808,
+        -128
+      ],
+      "id": "ecd03df1-f065-4945-9168-074ac03f96d3",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "binaryPropertyName": "=web",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1808,
+        304
+      ],
+      "id": "367dc4ec-61c1-44cd-9fc8-0c9589720f76",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fe418cea-1440-476c-a08e-760ac75a82fd",
+              "leftValue": "={{ $json.resumen }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "f01a5d53-7516-45c8-9095-8e0897ed595c",
+              "leftValue": "={{ $json.resumen }}",
+              "rightValue": "Por favor, proporciona el texto que deseas procesar.",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1808,
+        112
+      ],
+      "id": "02d3637b-60f4-498a-bc84-ab1274650abc",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "content": "## Checkeo de los dominios y subdominos",
+        "height": 880,
+        "width": 656
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -352,
+        -368
+      ],
+      "typeVersion": 1,
+      "id": "017384af-403b-4391-a5b5-c4134d52aeeb",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "model": "mxbai-embed-large:335m"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        928,
+        816
+      ],
+      "id": "1312c8b9-a9e9-45e9-bdce-c88dc5d78fcd",
+      "name": "Embeddings Ollama",
+      "credentials": {
+        "ollamaApi": {
+          "id": "589WrEVHKVq6WEVo",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "load",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "chatbot-contenidos",
+          "mode": "list",
+          "cachedResultName": "chatbot-contenidos"
+        },
+        "prompt": "={{ $json.output }}",
+        "topK": 7,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        928,
+        640
+      ],
+      "id": "dc5fb064-4d11-4a7e-b320-0b58af1d4489",
+      "name": "Pinecone Vector Store1",
+      "credentials": {
+        "pineconeApi": {
+          "id": "mVTUpcdeKTHiTCsA",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Obtenemos la salida del nodo HTTP, que es un solo item con la respuesta de la API.\nconst responseData = $input.item.json;\n\n// Usamos un array para guardar los textos de cada documento recuperado.\nconst contexts = [];\n\n// La respuesta de la API tiene los vectores dentro de un objeto, no un array.\n// Por eso, usamos Object.values() para iterar sobre cada documento.\nif (responseData.vectors) {\n  for (const vector of Object.values(responseData.vectors)) {\n    // Verificamos que el documento tiene los metadatos y el texto que necesitamos.\n    if (vector.metadata && vector.metadata.text) {\n      contexts.push(vector.metadata.text);\n    }\n  }\n}\n\n// Unimos todos los textos recuperados en una sola cadena de texto,\n// separados por una línea para que el LLM los distinga bien.\nconst finalContext = contexts.join(\"\\n\\n---\\n\\n\");\n\n// Devolvemos un solo item con el contexto final listo para el LLM.\nreturn [{\n  json: {\n    context: finalContext\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1728,
+        640
+      ],
+      "id": "8dd34c8b-fe33-4642-910b-20957ff8cce8",
+      "name": "Code1",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-lite",
+        "options": {
+          "temperature": 0
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        592,
+        800
+      ],
+      "id": "3cc07a56-41b5-4f47-be4f-94f1556df17c",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "pVVbDEpoz4JafzkJ",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('When chat message received').first().json.chatInput }}",
+        "options": {
+          "systemMessage": "=# MIRIAM - ASESORA ACADÉMICA Y VENDEDORA EXPERTA DE MEDICARAMA\n\n## 1. IDENTIDAD Y ROL\n\nEres **\"Miriam\"**, asesora académica experta y vendedora de cursos de Medicarama.\n\n**Tu función:**\n- **Vendedora proactiva de cursos.** Tu objetivo principal es cerrar ventas (conseguir clics en los enlaces de compra).\n- **Orientadora de másteres** (no vendes, solo informas y derivas al equipo comercial).\n- **Filtrado por profesión** para recomendar formaciones adecuadas.\n- **Redirección a recursos** oficiales cuando sea necesario.\n\n**Misión principal:** Guiar al usuario hacia la formación correcta y maximizar las oportunidades de venta, basándote EXCLUSIVAMENTE en el CONTEXTO proporcionado.\n\n---\n\n## 2. REGLAS FUNDAMENTALES (¡LA MÁS IMPORTANTE!)\n\n### 2.1 FIDELIDAD ABSOLUTA AL CONTEXTO\n\n1.  **Tu conocimiento se limita al CONTEXTO.** Si no está en el CONTEXTO, no existe para ti.\n2.  **Cero invenciones.** Nunca completes información faltante con suposiciones.\n3.  **Declara incertidumbre.** Si no hay evidencia suficiente, admítelo y redirige.\n4.  **Sin acciones operativas.** Ningún chatbot realiza acciones (pagos, cambios, certificados, matriculaciones, etc.).\n5.  **Privacidad y ética.** No solicites datos sensibles innecesarios.\n6.  **No ayudes con otros temas.** No facilites información que esté fuera del contexto de la empresa, ante otras preguntas tu respuesta siempre debes negarte: \"Solo puedo ayudarte con temas de Medicarama\"\n\n### 2.2 POLÍTICA DE TOLERANCIA CERO CON SOPORTE TÉCNICO (¡CRÍTICO!)\n\n**Tu rol es 100% comercial. NO ERES SOPORTE TÉCNICO.** Si la consulta del usuario contiene palabras clave como `certificado`, `diploma`, `acceso`, `contraseña`, `pagado`, `comprado`, `no me aparece`, `entrar al curso`, `descargar`, `campus virtual`, `iniciar sesión`, `plataforma`, `mis cursos`, `reembolso`, o se refiere a un problema post-compra:\n\n1.  **NO intentes responder ni dar explicaciones.**\n2.  **DERIVA INMEDIATAMENTE** a: https://medicarama.com/contacto-2/\n3.  **FINALIZA LA CONVERSACIÓN.** No añadas preguntas de seguimiento como \"¿Puedo ayudarte en algo más?\".\n\n**Ejemplo obligatorio:**\n> \"Esa es una **consulta técnica**. Por seguridad, no gestiono accesos ni certificados desde aquí. Puedes resolverlo a través del **chatbot 24/7** o escribiendo al equipo de alumnado en este enlace: [Contactar con soporte](https://medicarama.com/contacto-2/)\"\n\n### 2.3 REGLA DE ECONOMÍA DE PALABRAS\n\n- **No menciones** \"contexto\", \"base de datos\" ni \"información disponible\" **excepto**:\n  - Una única mención opcional en el primer mensaje (máx. 1 línea) si aporta confianza.\n  - Cuando el usuario pregunte explícitamente por la fuente.\n- En el resto de respuestas, omítelo y responde de forma directa.\n\n---\n\n## 3. ÁRBOL DE DECISIONES ESTRATÉGICO\n\n### PASO 0: Detección de intención\nClasifica la consulta en: `curso`, `máster`, `técnica/soporte`, `ofertas`, `gratis`, `otra`.\n\n### PASO 1: Chequeo de evidencias (respondibilidad)\n¿El CONTEXTO contiene información suficiente y explícita para responder?\n\n- **SÍ** → Continúa al siguiente paso\n- **NO** → Aplica el **Protocolo de Honestidad y Redirección** (Sección 4)\n\n### PASO 2: Verificación de profesión\n¿Conoces la profesión del usuario?\n\n- **SÍ** → Úsala para filtrar y ajustar recomendaciones\n- **NO** → Pregunta la profesión ANTES de recomendar:\n  > \"Para orientarte mejor, ¿podrías decirme tu profesión?\"\n\n### PASO 3: Ruta por tipo de consulta\n\n**A) CURSOS** → Activa el **\"Modo Vendedor Consultivo\"** (Sección 5.1)\n**B) MÁSTER** → Sección 5.2 (informas y derivas al comercial)\n**C) TÉCNICA/SOPORTE** → Aplica la **\"Política de Tolerancia Cero\"** (Sección 2.2) y FINALIZA.\n**D) OFERTAS** → Deriva al enlace de las ofertas https://medicarama.com/ofertas/\n**E) CURSOS GRATUITOS** → Aplica el **\"Pivot de Ventas para 'Gratis'\"** (Sección 5.4)\n**F) OTRA** → Si está en CONTEXTO responde; si no, aplica Protocolo de Honestidad y Redirección\n\n---\n\n## 4. PROTOCOLO DE HONESTIDAD Y REDIRECCIÓN\n\nCuando el CONTEXTO no contenga la información necesaria:\n\n1.  Agradece el interés y explica brevemente que no tienes esa información disponible\n2.  Ofrece rutas oficiales según el tipo de consulta:\n   - **Másteres**: https://medicarama.com/formacion/masters/\n   - **Expertos**: https://medicarama.com/formacion/expertos-universitarios/\n   - **Especialistas**: https://medicarama.com/formacion/especialistas-universitarios/\n   - **Cursos**: https://medicarama.com/todos-los-cursos/\n   - **TCAE**: https://medicarama.com/profesion/tcae/\n   - **Másteres FP**: https://medicarama.com/formacion/masters-fp/\n3.  Ofrece explorar alternativas relacionadas que sí tengas disponibles\n4.  Evita prometer acciones o detalles no sustentados\n\n**Ejemplo:**\n> \"Gracias por tu interés en [formación X]. Ahora mismo no tengo los detalles de ese programa. Puedes ver la oferta oficial aquí: [enlace]. Si quieres, reviso opciones relacionadas que puedan encajarte.\"\n\n---\n\n## 5. SECCIONES DE ACTUACIÓN POR TIPO DE CONSULTA\n\n### 5.1 ACTUACIÓN PARA CURSOS (Rol Vendedor Consultivo)\n\n**Siempre basado en CONTEXTO:**\n\n1.  **Filtra por profesión** (requisito/beneficio/acreditación específica).\n2.  Presenta **1-2 cursos** con beneficio clave y enlace.\n3.  Menciona **acreditación/créditos** SOLO si consta en el CONTEXTO.\n4.  **MODO VENDEDOR CONSULTIVO:** Si el usuario expresa una necesidad grande o compleja (ej: 'necesito 100 créditos', 'quiero un plan para todo el año', 'recomiéndame muchos cursos'), **no ofrezcas 1-2 cursos**. Diseña y presenta inmediatamente un **\"plan de formación\" o un \"pack estratégico\" completo** que resuelva su necesidad. Justifica por qué esa combinación es la mejor para él. Preséntalo como una solución experta.\n5.  **LENGUAJE DE ASESORAMIENTO SEGURO:** Cuando te pregunten sobre la validez para una bolsa específica (SESCAM, SERGAS, etc.), responde afirmativamente si tiene acreditación CFC/ECTS, pero añade siempre esta coletilla: **\"De todas formas, te recomiendo siempre verificar las bases oficiales de la convocatoria, ya que es el documento que prevalece.\"**\n6.  **Cierre de avance** (sin prometer acciones operativas):\n    - Ejemplo: \"¿Te encaja para tu perfil? Puedo ampliar contenidos y requisitos.\"\n\n### 5.2 ACTUACIÓN PARA MÁSTERES (No vendes, solo orientas)\n\n**Siempre basado en CONTEXTO:**\n\n1.  **Valida el interés** y filtra por profesión.\n2.  Ofrece información y enlace si constan en el CONTEXTO.\n3.  Aclara que la gestión la hace el **equipo comercial**; sugiere formulario/contacto si lo solicita.\n4.  Si no consta en el CONTEXTO, aplica el **Protocolo de Honestidad y Redirección**.\n\n### 5.4 PIVOT DE VENTAS PARA SOLICITUDES DE \"CURSOS GRATUITOS\"\n\n**Si un profesional titulado pregunta por cursos gratuitos, sigue este flujo:**\n1.  Informa de que actualmente no hay cursos gratuitos para profesionales titulados.\n2.  **Pivota inmediatamente a la venta:** \"Pero si lo que buscas es la forma más económica de sumar puntos para la bolsa, te recomiendo estas opciones acreditadas desde solo 24€.\"\n3.  Presenta 1-2 cursos de bajo coste pero con alta relación crédito/precio y su enlace de compra.\n\n### **5.5 FLUJOS DE CONVERSACIÓN GUIADOS POR BOTONES**\n\n**Tu principal objetivo es mantener al usuario interactuando a través de botones.** Cuando un usuario haga clic en un botón, recibirás el `actionValue` correspondiente. Tu respuesta debe seguir estas reglas:\n\n1.  **Si el `actionValue` es `recomendar curso`:**\n    *   Tu respuesta DEBE ser EXACTAMENTE la siguiente, para ofrecer las profesiones más comunes como botones:\n        > \"¡Perfecto! 😊 Para poder recomendarte los cursos más adecuados, dime, ¿cuál es tu profesión?\n        >\n        > [Médicos/as](action:Soy médic@)\n        > [Enfermeros/as](action:Soy enfermer@)\n        > [TCAEs](action:Soy TCAE)\n        > [Psicólogos/as](action:Soy psicólog@)\n        > [Otra profesión](action:Otra profesión)\"\n\n2.  **Si el `actionValue` es `informacion masteres`:**\n    *   Tu respuesta DEBE ser una breve introducción a los másteres y un enlace para verlos todos, finalizando con una pregunta abierta.\n        > \"Genial. En Medicarama tenemos másteres de formación permanente y másteres FP para especializarte. Contamos con opciones online y presencial y están orientados a la práctica clínica.\n        >\n        > Puedes ver toda la oferta aquí: [Ver todos los másteres](https://medicarama.com/formacion/masters/)\n        >\n        > ¿Hay alguna especialidad que te interese en particular?\"\n\n3.  **Si el `actionValue` es `Otra profesión`:**\n    *  Tu respuesta DEBE ser una recomendación que NO sea exclusivamente para Médicos, Enfermeros, TCAEs o Psicólogos como también un enlance para verlos todos.\n        > \"Vale!😊 Para hacerte una mejor recomendación necesitaría saber tu profesión, estos son 100% online y puntúan para la bolsa.\n        >\n        > Puedes ver toda la oferta aquí y filtrar por tu profesión: [Ver todos los cursos](https://medicarama.com/todos-los-cursos/?assistant=miriam)\n\n---\n\n## 6. FORMATO DE RESPUESTA\n\n### 6.1 ESTILO DE COMUNICACIÓN\n\n- **Tono**: cercano, profesional, claro y conciso.\n- **Evita metacomunicación**: no digas \"según el contexto/bd/info disponible\", salvo la mención inicial opcional o si el usuario pregunta por la fuente.\n- **No des cifras/fechas** que no consten en el CONTEXTO.\n- **Formato útil**: listas breves y enlaces funcionales.\n- **Coherencia de cierres**:\n  - Cursos/Másteres: cierra con UNA pregunta de avance.\n  - Técnica/soporte: deriva y FINALIZA (sin seguimiento).\n\n### 6.2 FORMATO OBLIGATORIO DE ENLACES (¡CRÍTICO!)\n\n**TODOS los enlaces DEBEN seguir este formato markdown estricto:**\n\n✅ **FORMATO CORRECTO:**\n```\n📘 [Descargar dossier informativo](https://forms.medicarama.com/medicarama/form/DescargarDosier/formperma/xxx)\n\n🎓 [Solicitar beca o más información](https://forms.medicarama.com/medicarama/form/PostgradosInfo/formperma/xxx)\n```\n\n❌ **FORMATO INCORRECTO (NUNCA usar):**\n```\n📘 Descargar dossier informativo:\nhttps://forms.medicarama.com/medicarama/form/DescargarDosier/formperma/xxx\n\n🎓 Solicitar beca o más información:\nhttps://forms.medicarama.com/medicarama/form/PostgradosInfo/formperma/xxx\n```\n\n**Reglas obligatorias para enlaces:**\n\n1.  Emoji (opcional) + `[texto descriptivo](URL)` en UNA sola línea.\n2.  NUNCA pongas la URL en una línea separada del texto.\n3.  NUNCA pongas \":\" después del texto descriptivo seguido de la URL en la siguiente línea.\n4.  El texto descriptivo va DENTRO de los corchetes `[]`.\n5.  La URL completa va DENTRO de los paréntesis `()`.\n6.  NO uses saltos de línea entre el texto y la URL.\n\n**Patrones válidos:**\n- `[Texto del enlace](https://url-completa.com)`\n- `📘 [Texto del enlace](https://url-completa.com)`\n- `**Título:** [Texto del enlace](https://url-completa.com)`\n\n**Patrones NO válidos:**\n- `Texto del enlace:\\nhttps://url-completa.com` ❌\n- `Texto del enlace: https://url-completa.com` ❌\n- `[https://url-completa.com]` ❌\n\n---\n\n## 7. EJEMPLOS DE RESPUESTAS CORRECTAS\n\n### Ejemplo 1: Consulta sobre máster disponible en CONTEXTO\n\n**Usuario:** \"Hola, soy enfermera y busco info del máster de cuidados paliativos.\"\n\n**Miriam:**\n> \"Claro 😊 Aquí tienes los enlaces oficiales del **Máster de Formación Permanente en Cuidados Paliativos**:\n> \n> 📘 [Descargar dossier informativo](https://forms.medicarama.com/medicarama/form/DescargarDosier/formperma/GqzmxzaCyFoe_qaA7SjZqwDALA__Wv6F3EbKgZHl2nA)\n> \n> 🎓 [Solicitar beca o más información](https://forms.medicarama.com/medicarama/form/PostgradosInfo/formperma/QyoBFITNlG-3dFSoX6VtgXsvsBmFWbYtz-uXpGBAJCI?zf_pf_id=238897)\n> \n> ¿Quieres que te resuma los puntos clave del máster antes de rellenarlo?\"\n\n### Ejemplo 2: Consulta sobre formación NO disponible en CONTEXTO\n\n**Usuario:** \"Hola, soy enfermera y busco info del máster de quirófano.\"\n\n**Miriam:**\n> \"¡Gracias por tu interés! Ahora mismo no tengo datos del **Máster de Quirófano**.\n> \n> Puedes revisar la oferta completa de másteres aquí: [Ver todos los másteres](https://medicarama.com/formacion/masters/)\n> \n> Como **enfermera**, sí tengo información del **Máster en Enfermería Neonatal y Pediátrica**. ¿Te cuento los puntos clave?\"\n\n### Ejemplo 3: Consulta de soporte técnico\n\n**Usuario:** \"He olvidado la contraseña de mi cuenta, ¿cómo la recupero?\"\n\n**Miriam:**\n> \"Es una **consulta técnica**. Por seguridad no gestiono contraseñas ni accesos.\n> \n> Usa el **chatbot 24/7** o escribe a alumnado aquí: [Contactar con soporte](https://medicarama.com/contacto-2/)\"\n\n### Ejemplo 4: Petición de profesión guiada por botones\n\n**Usuario:** \"recomendar curso\" (esto es lo que recibes del botón)\n\n**Miriam:**\n> \"¡Perfecto! 😊 Para poder recomendarte los cursos más adecuados, dime, ¿cuál es tu profesión?\n>\n> [Médicos/as](action:Soy médic@)\n> [Enfermeros/as](action:Soy enfermer@)\n> [TCAEs](action:Soy TCAE)\n> [Psicólogos/as](action:Soy psicólog@)\n> [Otra profesión](action:Otra profesión)\"\n\n\n\n---\n\n## 8. REGLAS DE ORO (Recordatorio final)\n\n1.  ✅ **El CONTEXTO manda** - Solo usa información que esté explícitamente en él.\n2.  ✅ **Cero alucinaciones** - Nunca inventes información.\n3.  ✅ **Primero profesión** - Pregunta antes de recomendar.\n4.  ✅ **Cursos: vendes** - Ofreces, presentas beneficios y cierras con pregunta de avance.\n5.  ✅ **Másteres: informas y derivas** - No vendes, solo orientas al equipo comercial.\n6.  ✅ **Soporte técnico: deriva y finaliza** - Sin preguntas de seguimiento.\n7.  ✅ **Enlaces en formato markdown** - Siempre `[texto](url)` en una línea.\n8.  ✅ **Ningún chatbot realiza acciones** - No prometas matrículas, pagos, certificados.\n\n---\n\n## 9. CONTEXTO PROPORCIONADO\n\n**IMPORTANTE:** Toda tu información se basa en este contexto. Si algo no aparece aquí, no lo conoces.\n\n```\n{{ $('Code1').item.json.context }}\n```"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1920,
+        640
+      ],
+      "id": "dd9f1289-9977-48d6-9c35-4849ec0eba7d",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=HISTORIAL:\n{{ $json.history }}\n\nPREGUNTA DE SEGUIMIENTO:\n{{ $('When chat message received').first().json.chatInput }}",
+        "options": {
+          "systemMessage": "=Eres un REESCRITOR DE CONSULTAS para búsqueda vectorial de Medicarama. SOLO reescribes, NUNCA respondes. Usa el HISTORIAL y el ÚLTIMO MENSAJE para producir UNA ÚNICA consulta autocontenida en forma de pregunta(s) que optimice la recuperación semántica.\n\nLÍMITES\n- Si el último mensaje es saludo/despedida/agradecimiento/confirmación o no hay intención informativa → devuelve exactamente: \"\"\n\nOBJETIVO (interno)\n- Genera UNA consulta final que:\n  1) Sea AUTOCONTENIDA: resuelve pronombres y referencias del historial (“ese curso”, “y con…”) con entidades claras.\n  2) Esté en FORMATO INTERROGATIVO: 1–2 preguntas breves (terminan con “?”), sin explicaciones.\n  3) Incluya ENTIDADES/FACETAS si existen: curso, edición, email de registro, nº de pedido, plataforma, código de error, fechas normalizadas.\n  4) Añada sinónimos útiles ES/EN SOLO SI caben natural en la pregunta (contraseña/clave/password; acceso/login; correo/email; certificado/certificate; factura/invoice).\n  5) Normaliza: minúsculas, sin tildes si es necesario para recall. No uses operadores booleanos ni comillas.\n\nALGORITMO (interno)\n1) Detecta si el último mensaje es elíptico (“y con X?”, “y X?”, “¿y…?”). Si lo es, extrae del historial el TEMA_BASE más reciente (p. ej., “límite de certificación en cursos ECTS”).\n2) Construye la pregunta integrando X con el TEMA_BASE (“¿los másteres se pueden certificar? ¿tienen límite?”).\n3) Si tu borrador contiene afirmaciones (“no existe…”, “se emite…”, “suele ser…”, “hay…”) → REESCRÍBELO como pregunta.\n4) Longitud orientativa: 8–22 palabras totales; 1–2 preguntas cortas.\n\nFORMATO DE SALIDA (OBLIGATORIO)\n- Devuelve ÚNICAMENTE:\n  - una cadena con la mejor consulta en forma de pregunta(s), o\n  - \"\" (cadena vacía) en los casos de silencio/fuera de alcance.\n- No añadas explicaciones, comillas ni texto adicional.\n\nEJEMPLOS\n\n(Elipsis a partir del tema “límite de certificación ECTS en cursos”)\nHistorial: Usuario: “¿Cuántos cursos ECTS se me pueden certificar? ¿Hay límite?” Bot: [responde sobre límite 200h/mes y 1 certificado/mes]\nÚltimo: “y con los másteres?”\nSalida: ¿los masters se pueden certificar? ¿tienen limite?\n\n(Acceso/contraseña)\nÚltimo: “He olvidado mi contraseña y no puedo entrar al campus.”\nSalida: ¿como restablecer la contrasena para acceder al campus de Medicarama?\n\n(Certificado no recibido)\nÚltimo: “No me llega el certificado del curso de ecografía desde ayer”\nSalida: ¿a que correo se envia el certificado del curso de ecografia? ¿que plazo de envio maneja Medicarama?\n\n(Factura)\nÚltimo: “Necesito la factura del pedido 12345 del curso Intensivo”\nSalida: ¿como solicitar la factura del pedido 12345 del curso intensivo de Medicarama?\n\n(Trivial)\nÚltimo: “ok, muchas gracias”\nSalida: \"\"\n",
+          "enableStreaming": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        592,
+        640
+      ],
+      "id": "6299a63c-f7d4-4107-8082-efcc0d12c081",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chat_history_contenidos",
+          "mode": "list",
+          "cachedResultName": "chat_history_contenidos"
+        },
+        "limit": 5,
+        "where": {
+          "values": [
+            {
+              "column": "session_id",
+              "value": "={{ $json.sessionId }}"
+            }
+          ]
+        },
+        "sort": {
+          "values": [
+            {
+              "column": "created_at",
+              "direction": "DESC"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        160,
+        640
+      ],
+      "id": "1978f9a8-f77a-4fcb-90bc-84eefdaff576",
+      "name": "Select rows from a table",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "c4FcayKDpSnIW6gD",
+          "name": "Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const messages = $input.all();\n\nif (messages.length === 0) {\n  return [{ json: { history: \"Sin historial previo.\" } }];\n}\n\nconst formattedHistory = messages.map(item => {\n  if (!item.json.message || !item.json.message.type || typeof item.json.message.content === 'undefined') {\n    return null; \n  }\n  const role = item.json.message.type === 'human' ? 'User' : 'AI';\n  \n  const content = item.json.message.content;\n  \n  return `${role}: ${content}`;\n}).filter(Boolean).join('\\n');\n\nreturn [{ json: { history: formattedHistory } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        384,
+        640
+      ],
+      "id": "289116b4-a77d-454b-a86e-02d6dcca54e4",
+      "name": "Code2",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "content": "## Chatbot web\n",
+        "height": 416,
+        "width": 2608,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        528
+      ],
+      "id": "075c5e8f-52fc-4c9a-9dd6-c4e7bfbd8590",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "jsCode": "// --- CONFIGURACIÓN ---\nconst SCORE_THRESHOLD = 0.72;\n\n// --- LÓGICA ---\nconst items = $input.all();\nconst relevantChunkIds = new Set();\n\nfor (const item of items) {\n  if (item.json.score >= SCORE_THRESHOLD) {\n    if (item.json.document && item.json.document.metadata && item.json.document.metadata.parent_chunk_id) {\n      \n      // --- CORRECCIÓN CLAVE ---\n      // El parent_chunk_id que viene de Pinecone ya está en el formato correcto.\n      // Simplemente lo añadimos directamente, SIN volver a codificarlo.\n      relevantChunkIds.add(item.json.document.metadata.parent_chunk_id);\n    }\n  }\n}\n\nreturn [{\n  json: {\n    ids_to_fetch: Array.from(relevantChunkIds)\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1264,
+        640
+      ],
+      "id": "00a96e1f-b909-472c-847f-609f9560fe88",
+      "name": "Code3"
+    },
+    {
+      "parameters": {
+        "url": "https://chatbot-contenidos-qxt9gjz.svc.aped-4627-b74a.pinecone.io/vectors/fetch",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{\n  {\n    \"ids\": $('Code3').item.json.ids_to_fetch\n  }\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1504,
+        640
+      ],
+      "id": "5bfe8fcf-7b39-4bf3-a6d7-a08e0f50e4fb",
+      "name": "HTTP Request2",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "HJIfgueHY9MdNKf9",
+          "name": "Api-Key pinecone"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "type": "SHA256",
+        "value": "={{ $json.content }}"
+      },
+      "type": "n8n-nodes-base.crypto",
+      "typeVersion": 1,
+      "position": [
+        960,
+        -112
+      ],
+      "id": "33f67ac2-6398-4c43-b0ce-61a68725d30b",
+      "name": "Crypto"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "scraped_pages_hashes",
+          "mode": "list",
+          "cachedResultName": "scraped_pages_hashes"
+        },
+        "returnAll": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -96,
+        336
+      ],
+      "id": "8c12ef7d-ff25-44f7-8984-ff904d759154",
+      "name": "GET",
+      "credentials": {
+        "postgres": {
+          "id": "c4FcayKDpSnIW6gD",
+          "name": "Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "url",
+        "joinMode": "keepEverything",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        976,
+        320
+      ],
+      "id": "f160b9d5-cacc-484c-967b-0f99813de9f1",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "863af51f-5d75-407a-84e7-bff0b1349639",
+              "leftValue": "={{ $json.content_hash }}",
+              "rightValue": "={{ $json.data }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "de7903e0-3a6e-4753-82a3-c2b66a11e810",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1216,
+        -320
+      ],
+      "id": "21d006d7-4a15-4e86-a7c5-b9351716f8f4",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1216,
+        -112
+      ],
+      "id": "22aef1e6-ef72-4a83-9728-818a394648f0",
+      "name": "HTTP Request3",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9b97ac0a-4c18-47bb-b6e5-b407a167a916",
+              "name": "url",
+              "value": "={{ $('Split Out1').item.json.sitemapUrl }}",
+              "type": "string"
+            },
+            {
+              "id": "d694baf7-4df4-406c-976b-e642027094e0",
+              "name": "data",
+              "value": "={{ $json.data }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        960,
+        112
+      ],
+      "id": "00d74292-58ec-4d68-81af-41d2dfde05a0",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "content",
+              "cssSelector": ".entry-content, .post-content",
+              "skipSelectors": "img, script, noscript, style, header, footer, nav, .site-header, .breadcrumbs"
+            },
+            {
+              "key": "title",
+              "cssSelector": "head > title"
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": true
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        1216,
+        112
+      ],
+      "id": "027387c8-9c65-49ab-bb76-e6f427ccd087",
+      "name": "HTML1"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/files/resumenes_scrapping.json",
+        "dataPropertyName": "web",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        2048,
+        304
+      ],
+      "id": "604ac457-ad5a-4937-b7d6-12abd26068b2",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "content": "## Obtención del contenido",
+        "height": 880,
+        "width": 528
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        320,
+        -368
+      ],
+      "typeVersion": 1,
+      "id": "6a91797b-9e4e-4cd3-b4dd-15313c0a4a45",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Checkeo de información nueva y update",
+        "height": 880,
+        "width": 848
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        864,
+        -368
+      ],
+      "typeVersion": 1,
+      "id": "f0003900-92f9-4bf6-9739-fd372c03436f",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Resumen y update del archivo json",
+        "height": 880,
+        "width": 528
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1728,
+        -368
+      ],
+      "typeVersion": 1,
+      "id": "252a2036-8446-4171-a612-459acfd65c60",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "scraped_pages_hashes",
+          "mode": "list",
+          "cachedResultName": "scraped_pages_hashes"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "url": "={{ $json.url }}",
+            "content_hash": "={{ $json.hash }}",
+            "last_processed_at": "={{ $now }}"
+          },
+          "matchingColumns": [
+            "url"
+          ],
+          "schema": [
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content_hash",
+              "displayName": "content_hash",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "last_processed_at",
+              "displayName": "last_processed_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2064,
+        112
+      ],
+      "id": "8e2ef59f-02dc-48b7-b442-dabe3485f986",
+      "name": "Insert or update rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "c4FcayKDpSnIW6gD",
+          "name": "Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f0c5b13a-d9b5-42a8-80eb-11feb3739235",
+              "leftValue": "={{ $itemIndex }}",
+              "rightValue": 9999,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        -96
+      ],
+      "id": "3c6cd609-d707-40a9-8e69-e3225013b53b",
+      "name": "Filtro para test"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code Node (Versión Definitiva con Filtro de Irrelevancia)\n// Objetivo: Limpiar, reestructurar y FILTRAR la salida del LLM.\n// Input: Un array de items.\n// Output: Un array de items que contiene SOLO los items relevantes y limpios.\n\nconst relevantItems = []; // Nuevo array para guardar solo los items que pasen el filtro.\n\nfor (const item of items) {\n  const llmOutput = item.json.text;\n\n  if (!llmOutput || typeof llmOutput !== 'string' || llmOutput.trim().length < 10) {\n    // Si la salida es inválida, descartamos el item.\n    continue; // Salta a la siguiente iteración del bucle.\n  }\n\n  // --- PASO 1: FILTRADO POR RELEVANCIA ---\n\n  // Busca \"Tema: Irrelevante\". Si lo encuentra, descarta este item y continúa.\n  const irrelevantRegex = /^\\**\\s*Tema\\s*:\\**\\s*Irrelevante/im;\n  if (irrelevantRegex.test(llmOutput)) {\n    continue; // El tema es irrelevante, así que descartamos el item y pasamos al siguiente.\n  }\n\n  // --- PASO 2: EXTRACCIÓN Y LIMPIEZA (para items relevantes) ---\n\n  let tema = \"Tema no especificado\";\n  const temaRegex = /^\\**\\s*Tema\\s*:\\**\\s*(.*)$/im;\n  const temaMatch = llmOutput.match(temaRegex);\n  if (temaMatch && temaMatch[1]) {\n    tema = temaMatch[1].trim();\n  }\n\n  const cursosHeaderRegex = /\\n\\**\\s*(?:Cursos_?detectados|Cursos_?relacionados)\\s*:\\**/i;\n  const cursosMatch = llmOutput.match(cursosHeaderRegex);\n  \n  let textoLimpioBlock = llmOutput;\n  let cursosBlock = '';\n\n  if (cursosMatch) {\n    const splitIndex = cursosMatch.index;\n    textoLimpioBlock = llmOutput.substring(0, splitIndex);\n    cursosBlock = llmOutput.substring(splitIndex);\n  }\n\n  const textoHeaderRegex = /^\\**\\s*Texto_?limpio\\s*:\\**\\s*/im;\n  textoLimpioBlock = textoLimpioBlock.replace(textoHeaderRegex, '');\n  textoLimpioBlock = textoLimpioBlock.replace(temaRegex, '');\n  let textoLimpioFinal = textoLimpioBlock\n    .replace(/\\*\\*/g, '')\n    .replace(/# Entrada\\s*|# Salida\\s*/g, '')\n    .replace(/<br\\s*\\/?>/gi, '\\n')\n    .trim();\n\n  // --- PASO 3: RECONSTRUCCIÓN DE LA CADENA DE TEXTO ---\n\n  let finalOutput = `# ${tema}\\n\\n${textoLimpioFinal}`;\n\n  if (cursosBlock) {\n    const cursosDetectados = [];\n    const structuredCursoRegex = /-\\s*Nombre:\\s*(.*?)\\n-\\s*Tipo:\\s*(.*?)\\n-\\s*URL:\\s*(https?:\\/\\/.*?)(?=\\n-|$)/gs;\n    const cursoRegex = /[*-]\\s*([^(\\n]+?)\\s*\\((https?:\\/\\/[^)\\s]+)\\)/g;\n    \n    let match;\n\n    while ((match = structuredCursoRegex.exec(cursosBlock)) !== null) {\n        let nombre = match[1].trim().replace(/^\\*\\s*/, '');\n        if (nombre.toLowerCase() !== 'url:') {\n            cursosDetectados.push({\n                nombre: nombre,\n                tipo: match[2].trim(),\n                url: match[3].trim()\n            });\n        }\n    }\n\n    if (cursosDetectados.length === 0) {\n        while ((match = cursoRegex.exec(cursosBlock)) !== null) {\n            let nombre = match[1].trim().replace(/^\\*\\s*/, '');\n             if (nombre.toLowerCase() !== 'url:') {\n                cursosDetectados.push({\n                    nombre: nombre,\n                    tipo: 'No especificado',\n                    url: match[2].trim()\n                });\n            }\n        }\n    }\n\n    if (cursosDetectados.length > 0) {\n      finalOutput += `\\n\\n---\\n## Cursos Detectados\\n`;\n      for (const curso of cursosDetectados) {\n        finalOutput += `\\n- **Nombre:** ${curso.nombre}\\n- **Tipo:** ${curso.tipo}\\n- **URL:** ${curso.url}\\n`;\n      }\n    }\n  }\n  \n  // Reemplazamos el campo 'text' original con nuestra nueva cadena de texto.\n  item.json.text = finalOutput.trim();\n  \n  // Añadimos el item procesado y validado a nuestro array de resultados.\n  relevantItems.push(item);\n}\n\n// Devolvemos SOLAMENTE los items que han sido procesados y considerados relevantes.\nreturn relevantItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1792,
+        -320
+      ],
+      "id": "59e375db-28e2-4a72-9c4b-4d77429862fb",
+      "name": "Post-Processing"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c13eb3cd-2769-446b-a564-46edcbdad782",
+              "leftValue": "={{ $json.chatInput }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -96,
+        656
+      ],
+      "id": "a0aef6cb-9c23-4a8e-b538-14bfe8fe6c5b",
+      "name": "If1",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "14eff6f9-52d7-4742-b459-7d2ec11d1500",
+              "leftValue": "={{ $json.rawText.length }}",
+              "rightValue": 90,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1504,
+        112
+      ],
+      "id": "f3575d69-5021-47ec-9cee-26b23860945c",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.zohoapis.eu/crm/v2/Chatbot_Ventas/upsert",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "zohoOAuth2Api",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=data",
+              "value": "={{ [{ \"Name\": $json.sesion_id, \"fecha_hora\": $json.Fecha, \"profesion\": $json.profesion, \"intencion\": $json.intencion, \"tema_interes\": $json.tema_interes, \"tipo_acreditacion\": $json.tipo_acreditacion, \"solicita_descuento\": $json.solicita_descuento, \"feedback\": $json.feedback, \"longitud\": $json.longitud_conversacion, \"mensaje\": $json.Mensaje, \"compras_usuarios\": $json.transactions, \"ventas\": $json.totalRevenue, \"leads\": $json.miriam_leads }] }}"
+            },
+            {
+              "name": "duplicate_field",
+              "value": "={{ [\"Name\"] }}"
+            }
+          ]
+        },
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 10,
+              "batchInterval": 5000
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2032,
+        1200
+      ],
+      "id": "bb828cda-22a4-48a1-b012-01a807f1aa80",
+      "name": "Subir a Zoho",
+      "retryOnFail": true,
+      "credentials": {
+        "zohoOAuth2Api": {
+          "id": "ZipuGdaVUWpEBd4N",
+          "name": "Zoho account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "chat_history_contenidos",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "created_at",
+              "condition": "gte",
+              "keyValue": "={{ $now.minus(2, \"days\") }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        1040
+      ],
+      "id": "d7780154-cb35-4e44-b360-f93b57f36274",
+      "name": "Get many rows",
+      "credentials": {
+        "supabaseApi": {
+          "id": "U24WVGBbsydRqYx1",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Itera sobre cada item (conversación) que llega al nodo.\nfor (const item of items) {\n  // Obtiene el texto completo de la conversación.\n  const mensaje = item.json.Mensaje;\n\n  // Se asegura de que el campo 'Mensaje' existe y es un string antes de procesarlo.\n  if (typeof mensaje === 'string') {\n    // Usa una expresión regular para encontrar todas las ocurrencias de \"human:\".\n    // La 'g' (global) asegura que se cuenten todas las apariciones, no solo la primera.\n    // El '|| []' es un truco de seguridad: si no se encuentra ninguna coincidencia,\n    // .match() devuelve 'null', y 'null.length' daría un error.\n    // Al usar '|| []', si es 'null', lo convierte en un array vacío,\n    // y '.length' de un array vacío es 0, que es el resultado correcto.\n    const contadorHuman = (mensaje.match(/human:/g) || []).length;\n\n    // Añade el nuevo campo 'longitud_conversacion' al objeto JSON con el resultado del conteo.\n    item.json.longitud_conversacion = contadorHuman;\n\n  } else {\n    // Si por alguna razón el campo 'Mensaje' no existe, asigna 0 para evitar errores.\n    item.json.longitud_conversacion = 0;\n  }\n}\n\n// Devuelve los items, ahora con el nuevo campo añadido, para que sigan al siguiente nodo.\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1744,
+        1200
+      ],
+      "id": "72646fb3-8697-4620-b26c-c0870d73e23d",
+      "name": "Code5"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 4
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -320,
+        1232
+      ],
+      "id": "436d3d67-344a-4187-acd4-b3449ebd8234",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Función auxiliar\nconst padTo2Digits = (num) => num.toString().padStart(2, '0');\n\n// 1. Crear un objeto para agrupar los mensajes por session_id.\nconst sessions = {};\n\n// itera sobre cada item que llega al nodo\nfor (const item of items) {\n  const data = item.json;\n  const sessionId = data.session_id;\n\n  if (!sessions[sessionId]) {\n    sessions[sessionId] = [];\n  }\n  sessions[sessionId].push(data);\n}\n\n\n// 2. Preparar el array de resultados finales.\nconst results = [];\n\n// 3. Iterar sobre cada sesión agrupada para transformarla.\nfor (const sessionId in sessions) {\n  const sessionMessages = sessions[sessionId];\n  sessionMessages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));\n\n  // Crear un objeto Date a partir del primer mensaje.\n  const fechaObjeto = new Date(sessionMessages[0].created_at);\n\n  // Obtener el desfase de la zona horaria en minutos\n  const timezoneOffset = fechaObjeto.getTimezoneOffset();\n\n  // El signo debe ser invertido para el formato ISO 8601\n  const offsetSign = timezoneOffset > 0 ? \"-\" : \"+\";\n\n  // Calcular las horas y minutos del desfase\n  const offsetHours = Math.abs(Math.floor(timezoneOffset / 60));\n  const offsetMinutes = Math.abs(timezoneOffset % 60);\n\n  // Formatear la fecha en el formato YYYY-MM-DDTHH:mm:ss±HH:mm\n  const fechaFormateada =\n    fechaObjeto.getFullYear() +\n    \"-\" +\n    padTo2Digits(fechaObjeto.getMonth() + 1) + // Los meses son base 0 (0-11)\n    \"-\" +\n    padTo2Digits(fechaObjeto.getDate()) +\n    \"T\" +\n    padTo2Digits(fechaObjeto.getHours()) +\n    \":\" +\n    padTo2Digits(fechaObjeto.getMinutes()) +\n    \":\" +\n    padTo2Digits(fechaObjeto.getSeconds()) +\n    offsetSign +\n    padTo2Digits(offsetHours) +\n    \":\" +\n    padTo2Digits(offsetMinutes);\n\n\n  const mensajeConcatenado = sessionMessages\n    .map(msg => `${msg.message.type}: ${msg.message.content}`)\n    .join('\\n');;\n\n  // 4. Crear el objeto final para esta sesión.\n  results.push({\n    Fecha: fechaFormateada, // Usamos el nuevo formato con zona horaria\n    sesion_id: sessionId,\n    Mensaje: mensajeConcatenado,\n  });\n\n}\n\n// 5. Devolver los resultados.\nreturn results.map(result => ({ json: result })); "
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        128,
+        1040
+      ],
+      "id": "3b430126-7cbd-43c9-aedc-ec95ab4fa67a",
+      "name": "Code4"
+    },
+    {
+      "parameters": {
+        "content": " ## Cargamos los chats al CRM",
+        "height": 624,
+        "width": 2608,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -352,
+        960
+      ],
+      "typeVersion": 1,
+      "id": "de0f539c-dd3d-4418-b32d-0ed7822208d2",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an expert data analyst specializing in parsing and structuring chat conversations. Your task is to analyze a user-chatbot transcript and extract key information. You MUST respond ONLY with a valid JSON object. Do not include any explanatory text, introductions, or markdown formatting like json.",
+        "messages": {
+          "messageValues": [
+            {
+              "type": "HumanMessagePromptTemplate",
+              "message": "=Analiza la siguiente transcripción de chat y extrae la información basándote en la estructura JSON definida.\nTu respuesta DEBE ser únicamente un objeto JSON válido, sin texto adicional ni formato markdown.\n\n**Reglas estrictas:**\n1.  Para los campos con una lista de opciones (marcados con '|'), DEBES elegir una de esas opciones.\n2.  Si una información no está presente en la transcripción, DEBES usar el valor \"no especifica\". No uses \"\", \"nulo\" o frases similares, tampoco dejes campos vacios.\n3.  Para los campos de tipo booleano, DEBES usar `true` o `false`.\n\n**Estructura JSON Requerida:**\n{\n  \"profesion_usuario\": \"string|no especifica\",\n  \"intencion_principal\": \"Búsqueda de Cursos|Soporte Técnico|Consulta de Precios/Descuentos|Información General|Otra\",\n  \"tema_de_interes\": \"string|no especifica\",\n  \"tipo_acreditacion_buscada\": \"CFC|ECTS|Máster|Certificado/Diploma|Otro|Ninguno\",\n  \"solicita_descuento\": \"si|no\",\n  \"feedback_usuario\": \"Positivo|Negativo|Neutro\"\n}\n\n**Aquí está la transcripción:**\n{{ $json.Mensaje }}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        320,
+        1040
+      ],
+      "id": "4198961a-78b7-46ac-9c74-401250c3cbe8",
+      "name": "Basic LLM Chain1",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "propertyId": {
+          "__rl": true,
+          "value": "455829618",
+          "mode": "list",
+          "cachedResultName": "MEDICARAMA - ECOMMERCE",
+          "cachedResultUrl": "https://analytics.google.com/analytics/web/#/p455829618/"
+        },
+        "metricsGA4": {
+          "metricValues": [
+            {
+              "listName": "other",
+              "name": "totalRevenue"
+            },
+            {
+              "listName": "other",
+              "name": "transactions"
+            }
+          ]
+        },
+        "dimensionsGA4": {
+          "dimensionValues": [
+            {}
+          ]
+        },
+        "returnAll": true,
+        "additionalFields": {
+          "dimensionFiltersUI": {
+            "filterExpressions": {
+              "expression": {
+                "inListFilter": [
+                  {
+                    "listName": "other",
+                    "name": "audienceId",
+                    "values": "12292052998"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleAnalytics",
+      "typeVersion": 2,
+      "position": [
+        -64,
+        1232
+      ],
+      "id": "71117d6a-035f-402d-be0d-d4b35c9858ff",
+      "name": "Compras por Miriam",
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleAnalyticsOAuth2": {
+          "id": "65XMSlb5POSmSP4v",
+          "name": "Google Analytics account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Itera sobre cada uno de los items que llegan al nodo\nfor (const n8nItem of items) {\n  // Accede a los datos JSON de cada item\n  const item = n8nItem.json;\n\n  // --- Verificación de seguridad ---\n  // Se asegura de que el campo \"date\" exista antes de intentar procesarlo\n  if (item && item.date) {\n    const dateString = item.date;\n\n    // Extrae el año, mes y día\n    const year = dateString.substring(0, 4);\n    const month = dateString.substring(4, 6);\n    const day = dateString.substring(6, 8);\n\n    // Construye la nueva fecha en el formato deseado\n    const newDate = `${year}-${month}-${day}T00:00:00+00:00`;\n\n    // Crea un nuevo campo llamado \"Fecha\"\n    item.Fecha = newDate;\n\n    // Elimina el campo original \"date\"\n    delete item.date;\n  }\n}\n\n// Devuelve la lista completa de items modificados\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        1232
+      ],
+      "id": "b9edd09b-2cae-42ae-9e5c-619ad142bbe7",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "Fecha2",
+              "field2": "Fecha"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1232,
+        1216
+      ],
+      "id": "93ef07b9-831e-4889-9576-3ae32d9e8ca5",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatDeepSeek",
+      "typeVersion": 1,
+      "position": [
+        320,
+        1168
+      ],
+      "id": "1b9b7145-0ecd-4165-8fa8-676474863a6f",
+      "name": "DeepSeek",
+      "credentials": {
+        "deepSeekApi": {
+          "id": "CwDGs7FRO7fGrhqT",
+          "name": "DeepSeek account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0d0a4de8-37e5-4ca3-b578-87144adbe181",
+              "name": "sesion_id",
+              "value": "={{ $('Code4').item.json.sesion_id }}",
+              "type": "string"
+            },
+            {
+              "id": "91b8d489-14ec-4553-a942-147390dfcc6b",
+              "name": "Fecha",
+              "value": "={{ $('Code4').item.json.Fecha }}",
+              "type": "string"
+            },
+            {
+              "id": "e47a43c2-d10c-48fb-9b16-a6ea7ab5867b",
+              "name": "profesion",
+              "value": "={{ $json.profesion_usuario }}",
+              "type": "string"
+            },
+            {
+              "id": "3b945434-8c6a-4a76-b988-0d92c1396f8d",
+              "name": "intencion",
+              "value": "={{ $json.intencion_principal }}",
+              "type": "string"
+            },
+            {
+              "id": "746f3afd-1c33-4c91-bb5c-1aeed9f0a0d9",
+              "name": "tema_interes",
+              "value": "={{ $json.tema_de_interes }}",
+              "type": "string"
+            },
+            {
+              "id": "9c903aff-ff3a-42e7-b07b-c8b0c0bfe86c",
+              "name": "tipo_acreditacion",
+              "value": "={{ $json.tipo_acreditacion_buscada }}",
+              "type": "string"
+            },
+            {
+              "id": "92bfa70d-71fa-4147-9b31-0528c5e2cab4",
+              "name": "solicita_descuento",
+              "value": "={{ $json.solicita_descuento }}",
+              "type": "string"
+            },
+            {
+              "id": "454db6f8-3a53-4fae-8e36-b83413ccf229",
+              "name": "Mensaje",
+              "value": "={{ $('Code4').item.json.Mensaje }}",
+              "type": "string"
+            },
+            {
+              "id": "25c179ed-cb1e-4f2b-88ec-45e253700086",
+              "name": "feedback",
+              "value": "={{ $json.feedback_usuario }}",
+              "type": "string"
+            },
+            {
+              "id": "68a7adab-2361-4f58-a215-24c7299c129f",
+              "name": "Fecha2",
+              "value": "={{ $('Code4').item.json.Fecha.split(\"T\")[0] + \"T00:00:00+00:00\"}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        992,
+        1040
+      ],
+      "id": "f37bb055-d90e-48f8-9f47-648556bf5823",
+      "name": "Edit Fields5",
+      "alwaysOutputData": false,
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function (múltiples items)\nreturn items.map((item, i) => {\n  const out = { ...item };\n  try {\n    const parsed = JSON.parse(item.json.text);\n    // Mezcla el JSON parseado al nivel raíz (ajusta a tu gusto)\n    out.json = { ...item.json, ...parsed };\n    out.json.__json_ok = true;\n  } catch (e) {\n    out.json.__json_ok = false;\n    out.json.__index = i;          // índice del item\n    out.json.__parse_error = e.message;\n    out.json.__bad_text = item.json.text;\n  }\n  return out;\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        1040
+      ],
+      "id": "cc10f04a-dda8-48f3-872d-779263d2e87b",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 3
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -336,
+        32
+      ],
+      "id": "f3e5ccd6-c22f-48dc-8b77-1eabc440da28",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://www.zohoapis.eu/crm/v2/Contacts?cvid=711276000187358143&fields=Ultima_modif_real,TipoLead&per_page=200",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "zohoOAuth2Api",
+        "options": {
+          "pagination": {
+            "pagination": {
+              "parameters": {
+                "parameters": [
+                  {
+                    "name": "page",
+                    "value": "={{ $response.body.info.page + 1 }}"
+                  }
+                ]
+              },
+              "paginationCompleteWhen": "other",
+              "completeExpression": "={{ !$response.body.info.more_records }}"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -64,
+        1424
+      ],
+      "id": "3e374013-4d59-4430-9685-03bdc398d5e0",
+      "name": "LEADs",
+      "credentials": {
+        "zohoOAuth2Api": {
+          "id": "ZipuGdaVUWpEBd4N",
+          "name": "Zoho account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "include": "={{ $json.data }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        208,
+        1424
+      ],
+      "id": "99196b70-c2e6-49ed-ac47-ccc17d446ac5",
+      "name": "Split Out2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1d435eb9-91ff-4024-a698-bf7bb6536d57",
+              "name": "Lead",
+              "value": "={{ $json.data.TipoLead }}",
+              "type": "string"
+            },
+            {
+              "id": "f1911950-53b5-4376-8593-39b224db3495",
+              "name": "Fecha",
+              "value": "={{ $json.data.Ultima_modif_real.split(\"T\")[0] + \"T00:00:00+00:00\" }}",
+              "type": "string"
+            },
+            {
+              "id": "2dd7c8c0-12dd-4741-be77-979eb4507107",
+              "name": "id",
+              "value": "={{ $json.data.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        1424
+      ],
+      "id": "2a0b5f06-0367-4407-a4e0-32e81a28a937",
+      "name": "Estandarizar2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = items.map(item => item.json);\n\nconst resumenPorFecha = {};\n\nfor (const item of input) {\n  const fecha = item.Fecha;\n  const lead = item.Lead; \n\n  if (!resumenPorFecha[fecha]) {\n    resumenPorFecha[fecha] = {\n      Fecha: fecha,\n      total_leads: 0,\n      miriam_leads: 0,\n    };\n  }\n\n  resumenPorFecha[fecha].total_leads += 1;\n\n  if (lead === 'MirIAm') {\n    resumenPorFecha[fecha].miriam_leads += 1;\n  } \n}\n\nreturn Object.values(resumenPorFecha).map(resumen => ({ json: resumen }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        1424
+      ],
+      "id": "a2feec9f-d779-4203-822e-4b8b433956d1",
+      "name": "Code6"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "Fecha",
+              "field2": "Fecha"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1456,
+        1408
+      ],
+      "id": "7dfc463e-7c96-4cc8-b2b7-e2719d7bf96f",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-chat-latest",
+          "mode": "list",
+          "cachedResultName": "gpt-5-chat-latest"
+        },
+        "options": {
+          "maxTokens": 1024,
+          "temperature": 0.1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1920,
+        816
+      ],
+      "id": "55aad40c-38db-4587-9d7e-31985d056c01",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "NrTZJ37eEYaX3cuY",
+          "name": "OpenAi real"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('When chat message received').first().json.sessionId }}",
+        "tableName": "chat_history_contenidos"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        2016,
+        816
+      ],
+      "id": "6341fcc7-5d12-49ac-8bd6-ad9f642d88ef",
+      "name": "Postgres",
+      "credentials": {
+        "postgres": {
+          "id": "c4FcayKDpSnIW6gD",
+          "name": "Supabase"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Check Robots": {
+      "main": [
+        [
+          {
+            "node": "Links de Medicarama",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "GET Anti Bloqueo": {
+      "main": [
+        [
+          {
+            "node": "Check Robots",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Links de Medicarama": {
+      "main": [
+        [
+          {
+            "node": "XML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "XML1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Filtro para test",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML": {
+      "main": [
+        [
+          {
+            "node": "Crypto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agregar URL": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Post-Processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Insert or update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Ollama": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store1": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crypto": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "HTML1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML1": {
+      "main": [
+        [
+          {
+            "node": "Agregar URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        []
+      ]
+    },
+    "Filtro para test": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post-Processing": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insert or update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many rows": {
+      "main": [
+        [
+          {
+            "node": "Code4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code5": {
+      "main": [
+        [
+          {
+            "node": "Subir a Zoho",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Get many rows",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Compras por Miriam",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "LEADs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code4": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compras por Miriam": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "DeepSeek": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "GET Anti Bloqueo",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "GET",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LEADs": {
+      "main": [
+        [
+          {
+            "node": "Split Out2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out2": {
+      "main": [
+        [
+          {
+            "node": "Estandarizar2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Estandarizar2": {
+      "main": [
+        [
+          {
+            "node": "Code6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code6": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Code5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "4FuNgWWASb0zOaUW"
+  },
+  "versionId": "94a92668-e690-4fa5-a8fd-c1e77185358a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5396befb6923a786e2fa5a67ece87a6dd39d32013e54cc778b911e58a1134f9f"
+  },
+  "id": "0PhNrAPrFIHDS7au",
+  "tags": [
+    {
+      "updatedAt": "2025-11-03T12:40:09.348Z",
+      "createdAt": "2025-11-03T12:40:09.348Z",
+      "id": "6LWMgwpazw4WjdET",
+      "name": "Ventas"
+    }
+  ]
+}
