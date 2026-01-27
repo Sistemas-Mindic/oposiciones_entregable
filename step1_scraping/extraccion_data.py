@@ -1,5 +1,6 @@
-#!/Users/AndresFelipe/Desktop/Codigo/PROYECTO_OPOSICIONES/oposiciones_ia/bin/python
+#!/usr/bin/env python3
 # python step1_scraping/extraccion_data.py
+import argparse
 import sys
 import re
 import html
@@ -11,9 +12,16 @@ import unicodedata
 from io import BytesIO
 from urllib.parse import urljoin
 from requests.exceptions import SSLError, RequestException
-import os
+from pathlib import Path
 from lxml import html as lxml_html, etree
 import html2text
+
+from step1_scraping.extraccion_config import (
+    DEFAULT_FUENTES,
+    DEFAULT_FUENTES_RECURSIVAS,
+    DEFAULT_OUTPUT_DIR,
+    DEFAULT_OUTPUT_FILENAME,
+)
 
 from step2_filtrado.palabras_oposiciones import palabras_oposiciones
 from step2_filtrado.patrones_convocatoria import (
@@ -698,63 +706,40 @@ def procesar_fuentes(fuentes_planas, fuentes_recursivas, nombre_archivo_csv: str
         print("  (Ninguna)")
 
 
-# ---------------------------------------------------------------
-#                   EJECUCIÓN PRINCIPAL
-# ---------------------------------------------------------------
+def main(argv=None):
+    parser = argparse.ArgumentParser(description="Ejecuta la extracción de convocatorias desde varias fuentes")
+    parser.add_argument(
+        "--fuente-plana",
+        action="append",
+        dest="fuente_plana",
+        help="Añade una URL de listado plana a procesar (puede repetirse)",
+    )
+    parser.add_argument(
+        "--fuente-recursiva",
+        action="append",
+        dest="fuente_recursiva",
+        help="Añade una URL de listado recursivo a procesar (cada subenlace se trata como detalle)",
+    )
+    parser.add_argument(
+        "--output",
+        "-o",
+        dest="output_path",
+        help="Ruta completa del CSV resultante (por defecto se guarda en resultados_scraping)",
+    )
 
-# Fuentes RECURSIVAS (las que estaban “sueltas”)
-FUENTES_RECURSIVAS = [
-    "https://www.sede.dival.es/tablonpersonal/Convocatorias.do?codtipo=OP&lang=es&",  # ESTE NO DESCARGA SUBENLACES
-   # "https://divalsitae.sede.dival.es/sitae/",  # ESTE SI DESCARGA PDFS
-]
+    args = parser.parse_args(argv if argv is not None else sys.argv[1:])
 
-# Fuentes normales (planas)
-FUENTES = [
-    "https://www.san.gva.es/es/web/recursos-humans/empleo-publico",  # Link de convocatorias empleo publico
-    "https://www.san.gva.es/es/web/recursos-humans/cobertura-temporal-procesos-abiertos",  # Procesos abiertos
-    "https://www.gva.es/es/inicio/atencion_ciudadano/buscadores/busc_empleo_publico?descripcion=enfer&plazoSolicitud=A&estadoConvocatoria=Proceso"  # Filtrado de empleo publico
-    # Añade aquí más fuentes si quieres...
-        # NIVEL ESTATAL
-    "https://administracion.gob.es/pag_Home/empleoPublico/buscador.html",  # Buscador general empleo público AGE y parte CCAA
-    "https://www.boe.es",  # Boletín Oficial del Estado (BOE)
-    "https://www.sanidad.gob.es/servCiudadanos/oposicionesConcursos/ofertasEmpleo/home.htm",  # Ministerio de Sanidad – empleo público sanidad estatal
-    "https://ingesa.sanidad.gob.es/RRHH-y-Empleo-INGESA.html",  # INGESA – empleo público Ceuta y Melilla (sanidad estatal)
-
-    # SERVICIOS DE SALUD AUTONÓMICOS
-    "https://www.sspa.juntadeandalucia.es/servicioandaluzdesalud/profesionales/ofertas-de-empleo/oferta-de-empleo-publico-puestos-base",  # SAS Andalucía – OPE y empleo público sanitario
-    "https://www.aragon.es/-/oposiciones",  # Aragón – oposiciones generales (incluye sanidad)
-    "https://www.aragon.es/-/trabajar-en-el-salud-seleccion-y-provision-",  # Aragón – Trabajar en el SALUD (selección y provisión)
-    "https://www.astursalud.es/categorias/-/categorias/profesionales/06000recursos-humanos/04000procesos-selectivos",  # SESPA Asturias – procesos selectivos personal estatutario
-    "https://www.ibsalut.es/es/profesionales/recursos-humanos/trabaja-con-nosotros/oposiciones",  # IB-SALUT Illes Balears – oposiciones
-    "https://www3.gobiernodecanarias.org/sanidad/scs/organica.jsp?idCarpeta=b8cf85ba-fc1a-11dd-a72f-93771b0e33f6",  # SCS Canarias – oferta de empleo público sanitario
-    "https://www.scsalud.es/concurso-oposicion",  # SCS Cantabria – concurso-oposición sanitario
-    "https://sanidad.castillalamancha.es/profesionales/atencion-al-profesional/oferta-de-empleo-publico",  # SESCAM Castilla-La Mancha – OPE y empleo público
-    "https://www.saludcastillayleon.es/profesionales/es/ofertasconcursos/ofertas-empleo-publico-procesos-selectivos-sacyl",  # Sacyl Castilla y León – empleo público y procesos selectivos
-    "https://ics.gencat.cat/ca/lics/treballeu-a-lics/",  # ICS Cataluña – portal trabajar en el ICS (convocatorias, OPE, estabilización)
-    "https://convocatories.ics.extranet.gencat.cat/arbre.html?arbre=oposiciotornlliure",  # ICS Cataluña – oposiciones turno libre
-    "https://www.san.gva.es/es/web/recursos-humans/empleo-publico",  # GVA Comunitat Valenciana – empleo público sanidad
-    "https://saludextremadura.ses.es/seleccionpersonal/",  # SES Extremadura – portal selección de personal
-    "https://www.sergas.es/Recursos-Humanos?idcatgrupo=11029&idioma=es",  # SERGAS Galicia – empleo público (Fides, OPE, bolsas)
-    "https://www.sergas.es/Recursos-Humanos/OPE-Oferta-Pública-de-Emprego?idioma=es",  # SERGAS Galicia – información específica OPE
-    "https://www.larioja.org/empleo-publico/es/oposiciones/personal-estatutario-seris",  # La Rioja – personal estatutario SERIS (Servicio Riojano de Salud)
-    "https://www.comunidad.madrid/gobierno/espacios-profesionales/seleccion-personal-estatutario-servicio-madrileno-salud",  # SERMAS Comunidad de Madrid – selección personal estatutario
-    "https://www.murciasalud.es/web/recursos-humanos-y-empleo/oposiciones",  # Servicio Murciano de Salud – oposiciones
-    "https://empleosalud.navarra.es/es/",  # Empleo Salud Navarra – oposiciones, traslados, contratación
-    "https://www.osakidetza.euskadi.eus/oferta-de-empleo-publico/webosk00-procon/es/",  # Osakidetza País Vasco – OPE y empleo público sanitario
-    # Puedes añadir aquí más fuentes oficiales si las incorporas en el futuro…
-]
-
-# Ruta donde quieres guardar el CSV
-OUTPUT_DIR = "/Users/AndresFelipe/Desktop/Codigo/PROYECTO_OPOSICIONES/step1_scraping/resultados_scraping"
-
-if __name__ == "__main__":
-    # Crear la carpeta si no existe
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-
-    ruta_salida = os.path.join(OUTPUT_DIR, "extraccion_data_todas_comunidades.csv")
+    fuentes_planas = args.fuente_plana or DEFAULT_FUENTES
+    fuentes_recursivas = args.fuente_recursiva or DEFAULT_FUENTES_RECURSIVAS
+    output_path = Path(args.output_path) if args.output_path else DEFAULT_OUTPUT_DIR / DEFAULT_OUTPUT_FILENAME
+    output_path.parent.mkdir(parents=True, exist_ok=True)
 
     procesar_fuentes(
-        FUENTES,
-        FUENTES_RECURSIVAS,
-        nombre_archivo_csv=ruta_salida,
+        fuentes_planas,
+        fuentes_recursivas,
+        nombre_archivo_csv=str(output_path),
     )
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

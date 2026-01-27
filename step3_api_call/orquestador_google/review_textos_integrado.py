@@ -37,15 +37,22 @@ from step3_otro_extractor import extraer_convocatorias_otro
 
 csv.field_size_limit(sys.maxsize)   # permite celdas enormes
 # ─────────────────────────────────────────────────────────────
-# CONFIG ENTRADA / SALIDA CSV
+# CONFIG ENTRADA / SALIDA CSV (ARREGLADO CON RUTAS DINÁMICAS)
 # ─────────────────────────────────────────────────────────────
 
-INPUT_DIR = "/Users/AndresFelipe/Desktop/Codigo/PROYECTO_OPOSICIONES/step1_scraping/resultados_scraping"
-OUTPUT_DIR = "/Users/AndresFelipe/Desktop/Codigo/PROYECTO_OPOSICIONES/step4_resultados"
+# Calculamos la ruta base del proyecto subiendo 2 niveles desde este script
+# Estamos en: .../step3_api_call/orquestador_google/review_textos_integrado.py
+current_dir = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(current_dir, "..", ".."))
+
+INPUT_DIR = os.path.join(PROJECT_ROOT, "step1_scraping", "resultados_scraping")
+OUTPUT_DIR = os.path.join(PROJECT_ROOT, "step4_resultados")
+
+# Asegurar que existe el directorio de salida
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 CSV_INPUT_PATH = os.path.join(INPUT_DIR, "extraccion_data_todas_comunidades.csv")
 CSV_OUTPUT_PATH = os.path.join(OUTPUT_DIR, "resultado_todas_comunidades.csv")
-
 
 # Cabecera fija (schema de salida + contexto pedido)
 BASE_FIELDS = [

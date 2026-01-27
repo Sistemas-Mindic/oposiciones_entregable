@@ -35,9 +35,11 @@ Luego:
         → + el texto detalle web como "texto_detalle: <contenido>"
 """
 
+import argparse
 import html
 import re
 import csv
+import sys
 import unicodedata
 from pathlib import Path
 from urllib.parse import urlencode
@@ -60,7 +62,8 @@ from lxml import html as lxml_html, etree
 # -------------------------------------------------------------------
 
 # Nombre del CSV de entrada (el que genera tu scraper)
-CSV_ENTRADA = Path(__file__).with_name("convocatorias_age_crudo_v2.csv")
+DEFAULT_CSV_ENTRADA = Path(__file__).with_name("convocatorias_age_crudo_v2.csv")
+DEFAULT_CSV_SALIDA = Path(__file__).with_name("convocatorias_detalle_age_v4.csv")
 
 # Perfil objetivo para filtrar:
 #   - "ENFERMERO"       → solo enfermería (excluyendo TCAE/Auxiliar)
@@ -236,7 +239,7 @@ def es_convocatoria_perfil(registro: dict, tipo_perfil: str) -> bool:
 # -------------------------------------------------------------------
 
 def cargar_convocatorias_campos_clave(
-    ruta_entrada: Path = CSV_ENTRADA,
+    ruta_entrada: Path = DEFAULT_CSV_ENTRADA,
     columnas_deseadas: list[str] = COLUMNAS_CRITICAS,
 ) -> list[dict]:
     if not ruta_entrada.exists():
@@ -421,7 +424,7 @@ def extraer_texto_detalle_con_selenium(url_detalle: str, driver) -> str:
 
 def guardar_detalle_convocatorias_en_csv(
     registros_filtrados: list[dict],
-    nombre_archivo: str = "convocatorias_detalle_age_v4.csv",
+    nombre_archivo: Path | str = DEFAULT_CSV_SALIDA,
 ):
     """
     Para cada registro filtrado:
@@ -499,32 +502,64 @@ def guardar_detalle_convocatorias_en_csv(
             driver.quit()
 
 
-# -------------------------------------------------------------------
-#  EJEMPLO DE USO DIRECTO
-# -------------------------------------------------------------------
+def main(argv=None) -> int:
+    parser = argparse.ArgumentParser(
+        description="Filtra las convocatorias AGE descargadas previamente y descarga cada detalle."
+    )
+    parser.add_argument(
+        "-i",
+        "--input",
+        dest="csv_entrada",
+        default=str(DEFAULT_CSV_ENTRADA),
+        help="CSV de entrada con todas las convocatorias (por defecto convocatorias_age_crudo_v2.csv).",
+    )
+    parser.add_argument(
+        "-o",
+        "--output",
+        dest="csv_salida",
+        default=str(DEFAULT_CSV_SALIDA),
+        help="CSV de salida con los textos de detalle (por defecto convocatorias_detalle_age_v4.csv).",
+    )
+    parser.add_argument(
+        "-p",
+        "--perfil",
+        dest="perfil_objetivo",
+        default=PERFIL_OBJETIVO,
+        help="Perfil a filtrar (ENFERMERO, TCAES, ENFERMEROYTCAES).",
+    )
 
-if __name__ == "__main__":
+    args = parser.parse_args(argv if argv is not None else sys.argv[1:])
+
     print("Cargando convocatorias desde CSV (campos clave)...\n")
-    registros = cargar_convocatorias_campos_clave()
+    registros = cargar_convocatorias_campos_clave(Path(args.csv_entrada))
 
     print(f"\nConvocatorias en memoria (total): {len(registros)}")
 
     registros_filtrados = []
     for registro in registros:
-        if es_convocatoria_perfil(registro, PERFIL_OBJETIVO):
+        if es_convocatoria_perfil(registro, args.perfil_objetivo):
             registros_filtrados.append(registro)
 
     print(
-        f"Convocatorias de perfil {PERFIL_OBJETIVO} detectadas por patrones: "
+        f"Convocatorias de perfil {args.perfil_objetivo} detectadas por patrones: "
         f"{len(registros_filtrados)}"
     )
 
-    guardar_detalle_convocatorias_en_csv(registros_filtrados)
+    guardar_detalle_convocatorias_en_csv(registros_filtrados, Path(args.csv_salida))
 
     if registros_filtrados:
-        print(f"\nPrimer registro {PERFIL_OBJETIVO} (campos seleccionados):")
+        print(f"\nPrimer registro {args.perfil_objetivo} (campos seleccionados):")
         primer_registro = registros_filtrados[0]
         for nombre_campo in CAMPOS_A_IMPRIMIR:
             print(f"  {nombre_campo}: {primer_registro.get(nombre_campo, '')}")
-        print(f"  url_detalle (construida): {construir_url_detalle_desde_referencia(primer_registro.get('referencia', ''))}")
+        print(
+            f"  url_detalle (construida): "
+            f"{construir_url_detalle_desde_referencia(primer_registro.get('referencia', ''))}"
+        )
         print(f"  es_pdf: false")
+
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

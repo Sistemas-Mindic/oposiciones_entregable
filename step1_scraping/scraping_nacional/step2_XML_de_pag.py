@@ -22,14 +22,16 @@ Requisitos (en tu .venv):
     pip install selenium webdriver-manager beautifulsoup4 requests lxml
 """
 
+import argparse
 import csv
 import json
+import sys
 import time
 import unicodedata
 import urllib.parse
 import xml.etree.ElementTree as ET
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 import tempfile
 
 import requests  # Por si lo necesitas más adelante (aquí no es obligatorio)
@@ -57,6 +59,8 @@ FILTROS_JSON = Path(__file__).with_name("filtros_empleo_publico.json")
 # Carpeta base donde se guardarán los XML descargados (se crearán subcarpetas por ejecución)
 DOWNLOAD_DIR = Path(__file__).with_name("descargas_xml")
 DOWNLOAD_DIR.mkdir(exist_ok=True)
+
+DEFAULT_OUTPUT_CSV = Path(__file__).with_name("convocatorias_age_crudo_v2.csv")
 
 
 # -------------------------------------------------------------------
@@ -412,11 +416,20 @@ def exportar_registros_a_csv(registros: list[dict], ruta_csv: Path):
     print(f"CSV creado en: {ruta_csv}")
 
 
-# -------------------------------------------------------------------
-#  EJEMPLO DE USO
-# -------------------------------------------------------------------
+def main(argv=None) -> int:
+    parser = argparse.ArgumentParser(
+        description="Descarga convocatorias AGE en CSV y exporta los registros."
+    )
+    parser.add_argument(
+        "--output",
+        "-o",
+        dest="output_csv",
+        default=str(DEFAULT_OUTPUT_CSV),
+        help="Ruta donde se guardará el CSV generado (por defecto convocatorias_age_crudo_v2.csv).",
+    )
 
-if __name__ == "__main__":
+    args = parser.parse_args(argv if argv is not None else sys.argv[1:])
+
     print("Iniciando scraping AGE...\n")
 
     criterios = {
@@ -435,5 +448,11 @@ if __name__ == "__main__":
         for k, v in registros[0].items():
             print(f"  {k}: {v}")
 
-        ruta_csv = Path(__file__).with_name("convocatorias_age_crudo_v2.csv")
+        ruta_csv = Path(args.output_csv)
         exportar_registros_a_csv(registros, ruta_csv)
+
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
