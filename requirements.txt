@@ -76,3 +76,6 @@ websocket-client
 websockets
 wsproto
 zstandard
+html2text
+html5lib
+lxml
