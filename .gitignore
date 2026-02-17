@@ -50,7 +50,4 @@ htmlcov/
 *.csv
 *.xlsx
 
-step1_scraping/resultados_scraping/
-step1_scraping/**/descargas_xml/
-step4_resultados/
-step9_Resultados_CSV/
+
