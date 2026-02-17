@@ -7,7 +7,7 @@ ejecutar_proyecto:
   stage: run
   script:
     - pip install -r requirements.txt  # Asegúrate de tener este archivo en tu repo
-    - python runfile.py                # El comando que lanza tu proyecto
+    - python run_full_pipeline.py                # El comando que lanza tu proyecto
   artifacts:
     paths:
       - "*.xlsx"                       # Guarda cualquier Excel generado para que n8n lo descargue
