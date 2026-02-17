@@ -1,0 +1,16 @@
+image: python:3.10
+
+stages:
+  - run
+
+ejecutar_proyecto:
+  stage: run
+  script:
+    - pip install -r requirements.txt  # Asegúrate de tener este archivo en tu repo
+    - python runfile.py                # El comando que lanza tu proyecto
+  artifacts:
+    paths:
+      - "*.xlsx"                       # Guarda cualquier Excel generado para que n8n lo descargue
+    expire_in: 1 week
+  only:
+    - triggers                         # Esto permite que n8n lo active vía API
