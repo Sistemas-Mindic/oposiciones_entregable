@@ -1,0 +1,31 @@
+name: Scraping Semanal de Becas
+
+on:
+  repository_dispatch:
+    types: [activar_desde_n8n] # Esto es lo que n8n "gritará" para empezar
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Instalar librerías
+        run: |
+          pip install -r requirements_old.txt
+
+      - name: Ejecutar Script
+        run: |
+          python run_full_pipeline.py
+
+      - name: Subir Excel generado
+        uses: actions/upload-artifact@v4
+        with:
+          name: excel-becas
+          path: "*.xlsx" # Busca cualquier archivo Excel que cree tu script
