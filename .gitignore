@@ -1,20 +1,56 @@
-# Secrets
+# =========================
+# 🔐 Secrets
+# =========================
 *.env
 API_*.env
 *.kdbx
 
-# Virtual env
+# =========================
+# 🐍 Virtual environment
+# =========================
 .venv/
+venv/
+env/
 
-# Mac
+# =========================
+# 🍎 macOS
+# =========================
 .DS_Store
 
-# Python
+# =========================
+# 🐍 Python cache / build
+# =========================
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
+*.so
 
-# Outputs / datos grandes
+# =========================
+# 🧪 Testing / coverage
+# =========================
+.pytest_cache/
+.coverage
+htmlcov/
+
+# =========================
+# 🧠 IDEs
+# =========================
+.vscode/
+.idea/
+
+# =========================
+# 📦 Logs
+# =========================
+*.log
+
+# =========================
+# 📊 Datos grandes / outputs
+# =========================
 *.csv
+*.xlsx
+
 step1_scraping/resultados_scraping/
+step1_scraping/**/descargas_xml/
 step4_resultados/
 step9_Resultados_CSV/
