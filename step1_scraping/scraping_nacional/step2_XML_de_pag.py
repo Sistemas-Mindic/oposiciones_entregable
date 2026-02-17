@@ -1,14 +1,4 @@
-##NOTA IMPORTANTE: 
 """
-Inicialmente se realizaba el scraping por filtros pero si y solo si se deja el filtro de convocatorias abiertas se extrae la data de
-XML de convocatorias abiertas en CSV el cual a posteriori será filtrado.
-
-"""
-##      ^^
-## LEER ||
-
-"""
-
 Scraping empleo público AGE:
 - Usa filtros del JSON filtros_empleo_publico.json
 - Construye la URL de resultados
@@ -30,6 +20,8 @@ import time
 import unicodedata
 import urllib.parse
 import xml.etree.ElementTree as ET
+import re  # <-- CAMBIO 1: Importamos re para limpieza
+from lxml import etree  # <-- CAMBIO 2: Importamos lxml para mayor tolerancia a errores
 from datetime import datetime
 from pathlib import Path
 import tempfile
@@ -325,11 +317,20 @@ def descargar_xml_con_selenium(
 def parsear_xml_convocatorias_bytes(xml_bytes: bytes) -> list[dict]:
     """
     Parsea el XML de convocatorias y devuelve una lista de dicts.
-
-    Cada hijo de <convocatorias> se convierte en:
-        { tag: texto, ... }
+    CAMBIO 3: Añadida limpieza de caracteres de control y parser tolerante (lxml).
     """
-    root = ET.fromstring(xml_bytes)
+    try:
+        # Limpieza de bytes correspondientes a caracteres de control (inválidos en XML)
+        xml_limpio = re.sub(rb'[\x00-\x08\x0b\x0c\x0e-\x1f]', b'', xml_bytes)
+        
+        # Usamos lxml con recover=True para saltar errores de tokens inválidos (como el de la línea 8905)
+        parser = etree.XMLParser(recover=True, encoding='utf-8')
+        root = etree.fromstring(xml_limpio, parser=parser)
+    except Exception as e:
+        print(f"Advertencia: El parser avanzado detectó problemas, intentando fallback: {e}")
+        # Fallback al método original si lxml falla catastróficamente
+        root = ET.fromstring(xml_bytes)
+
     registros = []
 
     for nodo in root.findall(".//convocatorias"):
