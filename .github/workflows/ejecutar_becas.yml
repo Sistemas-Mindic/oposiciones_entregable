@@ -28,4 +28,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: excel-becas
-          path: "*.xlsx" # Busca cualquier archivo Excel que cree tu script
+          path: "**/concat_resultado_final2.csv" 
+          if-no-files-found: error 
