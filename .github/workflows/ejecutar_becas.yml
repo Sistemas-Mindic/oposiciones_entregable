@@ -22,7 +22,7 @@ jobs:
 
       - name: Ejecutar Script
         env:
-          API_GOOGLE: ${{ secrets.API_GOOGLE }}  # Aquí está la conexión segura
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}  # Aquí está la conexión segura
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} # Haz lo mismo con la de OpenAI        
         run: |
           python run_full_pipeline.py
