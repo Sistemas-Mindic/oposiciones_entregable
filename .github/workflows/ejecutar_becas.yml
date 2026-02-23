@@ -3,7 +3,8 @@ name: Scraping Semanal de Becas
 on:
   repository_dispatch:
     types: [activar_desde_n8n] # Esto es lo que n8n "gritará" para empezar
-
+  
+  workflow_dispatch: # Esto habilita el botón manual
 jobs:
   build:
     runs-on: ubuntu-latest
